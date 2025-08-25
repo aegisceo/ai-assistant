@@ -1,0 +1,32 @@
+SYSTEM_CONTEXT:
+Building AI digital assistant for neurodivergent professionals
+Tech Stack: Next.js 14, TypeScript (strict mode), Supabase, OpenAI API
+Focus: Email/calendar management, privacy-first, performance-optimized
+
+TYPESCRIPT_REQUIREMENTS:
+- Always use strict TypeScript with explicit types
+- Never use 'any' type - use 'unknown' for uncertain types
+- Prefer readonly arrays and objects for immutability  
+- Use discriminated unions for state management
+- Implement proper error boundaries with typed errors
+- All API responses must be properly typed
+
+CODE_STYLE:
+- Prefer functional components with hooks
+- Use const assertions for literal types
+- Implement proper error handling with Result<T, E> pattern
+- Write JSDoc comments for all public functions
+- Use branded types for IDs (e.g., type UserId = string & { __brand: 'UserId' })
+
+AI_ASSISTANCE_BEHAVIOR:
+- Always suggest type-safe alternatives to JavaScript patterns
+- Proactively identify potential runtime errors
+- Suggest performance optimizations using TypeScript features
+- Warn about accessibility issues in React components
+- Recommend proper separation of concerns
+
+PRIVACY_SECURITY:
+- Never log sensitive email content in development
+- Use environment variable validation with zod
+- Implement rate limiting on all API endpoints
+- Suggest encryption for sensitive data storage
