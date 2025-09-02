@@ -47,6 +47,21 @@ export interface OpenAIClassificationResponse {
   readonly tokensUsed: number;
 }
 
+// Gmail Authentication Types
+export interface GmailAuthConfig {
+  readonly clientId: string;
+  readonly clientSecret: string;
+  readonly redirectUri: string;
+}
+
+export interface GmailTokens {
+  readonly accessToken: string;
+  readonly refreshToken: string;
+  readonly scope: string;
+  readonly tokenType: string;
+  readonly expiryDate: number;
+}
+
 // Supabase Database Types
 export interface Database {
   public: {
@@ -77,6 +92,21 @@ export interface Database {
         };
         Insert: Omit<Database['public']['Tables']['user_preferences']['Row'], 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Database['public']['Tables']['user_preferences']['Insert']>;
+      };
+      gmail_tokens: {
+        Row: {
+          id: string;
+          user_id: string;
+          access_token: string;
+          refresh_token: string;
+          scope: string;
+          token_type: string;
+          expiry_date: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['gmail_tokens']['Row'], 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Database['public']['Tables']['gmail_tokens']['Insert']>;
       };
     };
   };
