@@ -28,7 +28,7 @@ export type Exact<T, U> = T extends U ? (U extends T ? T : never) : never;
 import { z } from 'zod';
 
 const envSchema = z.object({
-  OPENAI_API_KEY: z.string().min(1),
+  ANTHROPIC_API_KEY: z.string().min(1),
   GOOGLE_CLIENT_ID: z.string().min(1),
   GOOGLE_CLIENT_SECRET: z.string().min(1),
   SUPABASE_URL: z.string().url(),

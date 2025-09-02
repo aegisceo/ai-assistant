@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run type-check:*)",
+      "Bash(npm install:*)",
+      "Bash(PORT=3000 npm run dev)",
+      "Bash(npm run build:*)",
+      "Bash(supabase db:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

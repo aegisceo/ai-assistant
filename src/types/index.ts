@@ -16,7 +16,7 @@ export interface Email {
 
 export interface EmailAddress {
   readonly email: string;
-  readonly name?: string;
+  readonly name?: string | undefined;
 }
 
 // AI Classification Types
