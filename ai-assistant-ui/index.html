@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroFlow AI - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs/lib/anime.iife.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #3b82f6;
+            --secondary-green: #10b981;
+            --calm-gray: #9ca3af;
+            --light-bg: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-primary);
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: #eff6ff;
+            color: var(--primary-blue);
+        }
+
+        .card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background-color: var(--card-bg);
+        }
+
+        .priority-high {
+            border-left: 4px solid #ef4444;
+        }
+
+        .priority-medium {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .priority-low {
+            border-left: 4px solid #10b981;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-connected {
+            background-color: var(--success);
+        }
+
+        .status-disconnected {
+            background-color: var(--error);
+        }
+
+        .email-category {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .category-work {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .category-personal {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+
+        .category-financial {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .category-opportunities {
+            background-color: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .category-newsletters {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .category-spam {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .urgency-1 { background-color: #dcfce7; }
+        .urgency-2 { background-color: #bbf7d0; }
+        .urgency-3 { background-color: #fef3c7; }
+        .urgency-4 { background-color: #fed7aa; }
+        .urgency-5 { background-color: #fecaca; }
+
+        .progress-bar {
+            height: 8px;
+            border-radius: 9999px;
+            background-color: #e5e7eb;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 9999px;
+            background-color: var(--primary-blue);
+        }
+
+        .working-hours {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .animate-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Mobile menu button -->
+    <div class="md:hidden fixed top-4 left-4 z-50">
+        <button id="menu-toggle" class="p-2 rounded-lg bg-white shadow">
+            <i data-feather="menu" class="text-gray-600"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar fixed h-full md:w-64 bg-white border-r border-gray-200 z-40 md:z-0 transform md:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div class="p-6 border-b border-gray-200">
+            <h1 class="text-2xl font-bold text-gray-800">NeuroFlow AI</h1>
+            <p class="text-sm text-gray-500">Executive Assistant</p>
+        </div>
+        <nav class="mt-6">
+            <div class="px-4 space-y-1">
+                <a href="#" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="home" class="w-5 h-5 mr-3"></i>
+                    Dashboard
+                </a>
+                <a href="emails.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="mail" class="w-5 h-5 mr-3"></i>
+                    Emails
+                </a>
+                <a href="calendar.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="calendar" class="w-5 h-5 mr-3"></i>
+                    Calendar
+                </a>
+                <a href="notifications.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="bell" class="w-5 h-5 mr-3"></i>
+                    Notifications
+                </a>
+                <a href="analytics.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="bar-chart-2" class="w-5 h-5 mr-3"></i>
+                    Analytics
+                </a>
+                <a href="settings.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="settings" class="w-5 h-5 mr-3"></i>
+                    Settings
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-800">Dashboard</h2>
+                    <p class="text-gray-600">Welcome back, Alex. Here's what you need to focus on today.</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-gray-100">
+                        <i data-feather="bell" class="w-5 h-5 text-gray-600"></i>
+                    </button>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <span class="text-blue-800 font-medium">A</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-6">
+            <!-- Connection Status Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="card p-6" data-service="gmail">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-800">Gmail Connection</h3>
+                            <p class="text-gray-600 mt-1 connection-info">Not connected</p>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="status-indicator status-disconnected"></span>
+                            <span class="ml-2 text-red-600 font-medium status-text">Disconnected</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium" data-action="connect-gmail">
+                            Connect Gmail
+                        </button>
+                        <button class="text-sm text-gray-600 hover:text-gray-800 font-medium ml-4" data-action="refresh-connection">
+                            Refresh Status
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card p-6" data-service="calendar">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-800">Calendar Integration</h3>
+                            <p class="text-gray-600 mt-1 connection-info">Requires Gmail connection</p>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="status-indicator status-disconnected"></span>
+                            <span class="ml-2 text-red-600 font-medium status-text">Disconnected</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium" disabled>
+                            Auto-enabled with Gmail
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Priority Dashboard -->
+            <div class="card mb-8">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-gray-800">Priority Inbox</h2>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
+                                Work Hours: 9AM - 5PM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4 priority-inbox-emails">
+                        <!-- Email items will be dynamically loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Working Hours & AI Processing -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Working Hours -->
+                <div class="card working-hours p-6">
+                    <h3 class="text-lg font-medium text-gray-800 mb-4">Working Hours</h3>
+                    <div class="flex items-center">
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-600">Current Status</p>
+                            <p class="working-hours-status text-2xl font-bold text-gray-800 mt-1">Outside Working Hours</p>
+                            <p class="text-sm text-gray-600 mt-2">Notifications will be queued</p>
+                        </div>
+                        <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow">
+                            <i class="fas fa-clock text-blue-500 text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <div class="flex justify-between text-sm text-gray-600 mb-2">
+                            <span>9:00 AM</span>
+                            <span>5:00 PM</span>
+                        </div>
+                        <div class="progress-bar working-hours-progress">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 text-center mt-2 time-remaining">Working hours start at 9:00 AM</p>
+                    </div>
+                </div>
+
+                <!-- AI Processing -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-medium text-gray-800 mb-4">AI Processing</h3>
+                    <div class="space-y-4">
+                        <div data-ai-process="emailClassification">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Email Classification</span>
+                                <span class="progress-percent">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div data-ai-process="calendarSync">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Calendar Sync</span>
+                                <span class="progress-percent">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div data-ai-process="priorityScoring">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Priority Scoring</span>
+                                <span class="progress-percent">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button class="w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100 transition">
+                            View Processing Details
+                        </button>
+                    </div>
+                </div>
+                <!-- Live Notifications -->
+                <div class="card p-6 mt-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Urgent Notifications</h3>
+                        <div class="flex items-center">
+                            <span id="notification-count" class="hidden bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">0</span>
+                            <button id="refresh-notifications" class="ml-2 p-1 rounded-full hover:bg-gray-100">
+                                <i data-feather="refresh-ccw" class="w-4 h-4 text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="live-notifications" class="space-y-3">
+                        <div class="text-center text-gray-500 py-4" id="no-notifications">
+                            No urgent notifications at this time.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth-ui.js"></script>
+    <script src="js/api-client.js"></script>
+    <script src="js/notification-manager.js"></script>
+    <script src="js/progress-tracker.js"></script>
+    <script src="js/ui-components.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+    </script>
+</body>
+</html>

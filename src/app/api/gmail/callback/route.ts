@@ -68,7 +68,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     await supabase
       .from('oauth_states')
       .delete()
-      .eq('id', stateRecord.id);
+      .eq('id', (stateRecord as any).id);
 
     // Create Gmail client
     const gmailClient = new GmailClient({

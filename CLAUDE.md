@@ -2,12 +2,42 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🧠 MEMORY PERSISTENCE SYSTEM
+
+### **Project State Files (READ FIRST)**
+- **`PROJECT_MEMORY.md`** - ⭐ COMPREHENSIVE project status, architecture, and current state
+- **`.claude/session_history.md`** - Session-by-session conversation context and decisions
+- **`IMPLEMENTATION_PROGRESS.md`** - ⚠️ OUTDATED (claims phases pending, but all are complete)
+
+### **Quick Status Check**
+```bash
+# Current Servers (if running)
+Backend: http://localhost:3000/api/health
+Frontend: http://localhost:8080 (ai-assistant-ui directory)
+
+# Quick architecture verification
+curl http://localhost:3000/api/health  # Should return healthy status
+curl http://localhost:8080 | head -5   # Should show NeuroFlow AI title
+```
+
+### **Critical Context**
+- ✅ **ALL 4 PHASES COMPLETE** - Ready for testing and PR
+- ✅ **18 API Endpoints** - Complete Gmail, AI, Calendar integration
+- ⚠️ **Two Frontends**: Use `ai-assistant-ui/` (NOT `site ui/`)
+- 🎯 **Production Ready** - Comprehensive TypeScript, security, error handling
+
 ## Development Commands
 
 ### Core Development
 ```bash
-# Development server
+# Development server (smart startup - handles port conflicts)
+npm run start:dev
+
+# Regular development server (port 3000)
 npm run dev
+
+# Kill any process using port 3000
+npm run kill:3000
 
 # Build application
 npm run build

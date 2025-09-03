@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroFlow AI - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs/lib/anime.iife.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #3b82f6;
+            --secondary-green: #10b981;
+            --calm-gray: #9ca3af;
+            --light-bg: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-primary);
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: #eff6ff;
+            color: var(--primary-blue);
+        }
+
+        .card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background-color: var(--card-bg);
+        }
+
+        .priority-high {
+            border-left: 4px solid #ef4444;
+        }
+
+        .priority-medium {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .priority-low {
+            border-left: 4px solid #10b981;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-connected {
+            background-color: var(--success);
+        }
+
+        .status-disconnected {
+            background-color: var(--error);
+        }
+
+        .email-category {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .category-work {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .category-personal {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+
+        .category-financial {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .category-opportunities {
+            background-color: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .category-newsletters {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .category-spam {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .urgency-1 { background-color: #dcfce7; }
+        .urgency-2 { background-color: #bbf7d0; }
+        .urgency-3 { background-color: #fef3c7; }
+        .urgency-4 { background-color: #fed7aa; }
+        .urgency-5 { background-color: #fecaca; }
+
+        .progress-bar {
+            height: 8px;
+            border-radius: 9999px;
+            background-color: #e5e7eb;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 9999px;
+            background-color: var(--primary-blue);
+        }
+
+        .working-hours {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Mobile menu button -->
+    <div class="md:hidden fixed top-4 left-4 z-50">
+        <button id="menu-toggle" class="p-2 rounded-lg bg-white shadow">
+            <i data-feather="menu" class="text-gray-600"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar fixed h-full md:w-64 bg-white border-r border-gray-200 z-40 md:z-0 transform md:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div class="p-6 border-b border-gray-200">
+            <h1 class="text-2xl font-bold text-gray-800">NeuroFlow AI</h1>
+            <p class="text-sm text-gray-500">Executive Assistant</p>
+        </div>
+        <nav class="mt-6">
+            <div class="px-4 space-y-1">
+                <a href="#" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="home" class="w-5 h-5 mr-3"></i>
+                    Dashboard
+                </a>
+                <a href="emails.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="mail" class="w-5 h-5 mr-3"></i>
+                    Emails
+                </a>
+                <a href="calendar.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="calendar" class="w-5 h-5 mr-3"></i>
+                    Calendar
+                </a>
+                <a href="notifications.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="bell" class="w-5 h-5 mr-3"></i>
+                    Notifications
+                </a>
+                <a href="analytics.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="bar-chart-2" class="w-5 h-5 mr-3"></i>
+                    Analytics
+                </a>
+                <a href="settings.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="settings" class="w-5 h-5 mr-3"></i>
+                    Settings
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-800">Dashboard</h2>
+                    <p class="text-gray-600">Welcome back, Alex. Here's what you need to focus on today.</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-gray-100">
+                        <i data-feather="bell" class="w-5 h-5 text-gray-600"></i>
+                    </button>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <span class="text-blue-800 font-medium">A</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-6">
+            <!-- Connection Status Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="card p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-800">Gmail Connection</h3>
+                            <p class="text-gray-600 mt-1">Connected to alex@example.com</p>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="status-indicator status-connected"></span>
+                            <span class="ml-2 text-green-600 font-medium">Connected</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                            Refresh Connection
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-800">Calendar Integration</h3>
+                            <p class="text-gray-600 mt-1">Google Calendar Synced</p>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="status-indicator status-connected"></span>
+                            <span class="ml-2 text-green-600 font-medium">Connected</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                            Manage Permissions
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Priority Dashboard -->
+            <div class="card mb-8">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-gray-800">Priority Inbox</h2>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
+                                Work Hours: 9AM - 5PM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <!-- Email Item 1 -->
+                        <div class="priority-high p-4 bg-white rounded-lg border border-gray-200">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mr-4">
+                                    <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                                        <i class="fas fa-exclamation-circle text-red-500"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center">
+                                        <h3 class="text-sm font-medium text-gray-900 truncate">Urgent: Project Deadline Approaching</h3>
+                                        <span class="ml-2 px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Urgent</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 truncate">From: manager@company.com</p>
+                                    <p class="text-sm text-gray-500 mt-1">Action required: Please review the project deliverables by EOD</p>
+                                    <div class="flex items-center mt-2">
+                                        <span class="email-category category-work">Work</span>
+                                        <span class="ml-2 text-xs text-gray-500">Received 2 hours ago</span>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0 ml-4">
+                                    <span class="text-xs font-medium text-gray-500">9:45 AM</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email Item 2 -->
+                        <div class="priority-medium p-4 bg-white rounded-lg border border-gray-200">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mr-4">
+                                    <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                                        <i class="fas fa-clock text-yellow-500"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center">
+                                        <h3 class="text-sm font-medium text-gray-900 truncate">Meeting Reminder: Team Sync</h3>
+                                        <span class="ml-2 px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Soon</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 truncate">From: team@company.com</p>
+                                    <p class="text-sm text-gray-500 mt-1">Reminder: Weekly team sync meeting in 30 minutes</p>
+                                    <div class="flex items-center mt-2">
+                                        <span class="email-category category-work">Work</span>
+                                        <span class="ml-2 text-xs text-gray-500">Received 1 day ago</span>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0 ml-4">
+                                    <span class="text-xs font-medium text-gray-500">Yesterday</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email Item 3 -->
+                        <div class="priority-low p-4 bg-white rounded-lg border border-gray-200">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mr-4">
+                                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                                        <i class="fas fa-info-circle text-green-500"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center">
+                                        <h3 class="text-sm font-medium text-gray-900 truncate">Newsletter: Industry Updates</h3>
+                                        <span class="ml-2 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Newsletter</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 truncate">From: updates@industry.com</p>
+                                    <p class="text-sm text-gray-500 mt-1">Weekly industry insights and trends</p>
+                                    <div class="flex items-center mt-2">
+                                        <span class="email-category category-newsletters">Newsletters</span>
+                                        <span class="ml-2 text-xs text-gray-500">Received 3 days ago</span>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0 ml-4">
+                                    <span class="text-xs font-medium text-gray-500">3 days ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Working Hours & AI Processing -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Working Hours -->
+                <div class="card working-hours p-6">
+                    <h3 class="text-lg font-medium text-gray-800 mb-4">Working Hours</h3>
+                    <div class="flex items-center">
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-600">Current Status</p>
+                            <p class="text-2xl font-bold text-gray-800 mt-1">Within Working Hours</p>
+                            <p class="text-sm text-gray-600 mt-2">Notifications will be sent immediately</p>
+                        </div>
+                        <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow">
+                            <i class="fas fa-clock text-blue-500 text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <div class="flex justify-between text-sm text-gray-600 mb-2">
+                            <span>9:00 AM</span>
+                            <span>5:00 PM</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 text-center mt-2">4 hours remaining today</p>
+                    </div>
+                </div>
+
+                <!-- AI Processing -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-medium text-gray-800 mb-4">AI Processing</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Email Classification</span>
+                                <span>98%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-green-500" style="width: 98%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Calendar Sync</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-green-500" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Priority Scoring</span>
+                                <span>92%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-green-500" style="width: 92%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button class="w-full py-2 px-4 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100 transition">
+                            View Processing Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menu-toggle');
+            
+            if (window.innerWidth < 768 && 
+                !sidebar.contains(event.target) && 
+                event.target !== menuToggle && 
+                !menuToggle.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // Set active nav item
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                if (item.getAttribute('href') === window.location.pathname.split('/').pop()) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

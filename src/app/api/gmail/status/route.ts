@@ -35,15 +35,34 @@ export async function GET(_request: NextRequest): Promise<NextResponse> {
     const isConnected = tokensResult.data !== null;
     const isExpired = tokensResult.data ? authService.isTokenExpired(tokensResult.data) : false;
 
+    // Get user email if connected (needed for frontend display)
+    let userEmail = null;
+    if (isConnected && !isExpired && tokensResult.data) {
+      try {
+        // TODO: Implement Gmail client for user profile fetching
+        // const authService = createGmailAuthService();
+        // const gmail = authService.createGmailClient(tokensResult.data);
+        // const profile = await gmail.users.getProfile({ userId: 'me' });
+        // userEmail = profile.data.emailAddress;
+      } catch (error) {
+        console.warn('Failed to fetch user email:', error);
+        // Continue without email - connection info is more important
+      }
+    }
+
     return NextResponse.json({
       success: true,
-      data: {
+      // Frontend expects these specific field names
+      connected: isConnected && !isExpired,
+      email: userEmail,
+      scopes: tokensResult.data?.scope.split(' ') ?? [],
+      // Additional metadata for debugging
+      meta: {
         isConnected,
         isExpired,
-        scopes: tokensResult.data?.scope.split(' ') ?? [],
         connectedAt: tokensResult.data ? new Date(tokensResult.data.expiryDate - 3600000).toISOString() : null,
         expiresAt: tokensResult.data ? new Date(tokensResult.data.expiryDate).toISOString() : null,
-      },
+      }
     });
 
   } catch (error) {

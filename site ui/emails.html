@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emails - NeuroFlow AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs/lib/anime.iife.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #3b82f6;
+            --secondary-green: #10b981;
+            --calm-gray: #9ca3af;
+            --light-bg: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-primary);
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: #eff6ff;
+            color: var(--primary-blue);
+        }
+
+        .card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background-color: var(--card-bg);
+        }
+
+        .email-category {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .category-work {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .category-personal {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+
+        .category-financial {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .category-opportunities {
+            background-color: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .category-newsletters {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .category-spam {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .urgency-1 { background-color: #dcfce7; }
+        .urgency-2 { background-color: #bbf7d0; }
+        .urgency-3 { background-color: #fef3c7; }
+        .urgency-4 { background-color: #fed7aa; }
+        .urgency-5 { background-color: #fecaca; }
+
+        .email-row {
+            transition: all 0.2s ease;
+        }
+
+        .email-row:hover {
+            background-color: #f9fafb;
+        }
+
+        .email-row.unread {
+            background-color: #f0f9ff;
+        }
+
+        .email-row.selected {
+            background-color: #e0f2fe;
+        }
+
+        .filter-btn {
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn.active {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Mobile menu button -->
+    <div class="md:hidden fixed top-4 left-4 z-50">
+        <button id="menu-toggle" class="p-2 rounded-lg bg-white shadow">
+            <i data-feather="menu" class="text-gray-600"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar fixed h-full md:w-64 bg-white border-r border-gray-200 z-40 md:z-0 transform md:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div class="p-6 border-b border-gray-200">
+            <h1 class="text-2xl font-bold text-gray-800">NeuroFlow AI</h1>
+            <p class="text-sm text-gray-500">Executive Assistant</p>
+        </div>
+        <nav class="mt-6">
+            <div class="px-4 space-y-1">
+                <a href="index.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="home" class="w-5 h-5 mr-3"></i>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full active">
+                    <i data-feather="mail" class="w-5 h-5 mr-3"></i>
+                    Emails
+                </a>
+                <a href="calendar.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="calendar" class="w-5 h-5 mr-3"></i>
+                    Calendar
+                </a>
+                <a href="notifications.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="bell" class="w-5 h-5 mr-3"></i>
+                    Notifications
+                </a>
+                <a href="analytics.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="bar-chart-2" class="w-5 h-5 mr-3"></i>
+                    Analytics
+                </a>
+                <a href="settings.html" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg w-full">
+                    <i data-feather="settings" class="w-5 h-5 mr-3"></i>
+                    Settings
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-800">Emails</h2>
+                    <p class="text-gray-600">Manage your inbox with AI-powered classification</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-gray-100">
+                        <i data-feather="bell" class="w-5 h-5 text-gray-600"></i>
+                    </button>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <span class="text-blue-800 font-medium">A</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-6">
+            <!-- Filters -->
+            <div class="card p-4 mb-6">
+                <div class="flex flex-wrap gap-2">
+                    <button class="filter-btn px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+                        All
+                    </button>
+                    <button class="filter-btn px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 active">
+                        Work
+                    </button>
+                    <button class="filter-btn px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+                        Personal
+                    </button>
+                    <button class="filter-btn px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+                        Financial
+                    </button>
+                    <button class="filter-btn px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+                        Opportunities
+                    </button>
+                    <button class="filter-btn px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+                        Newsletters
+                    </button>
+                    <button class="filter-btn px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+                        Spam
+                    </button>
+                </div>
+            </div>
+
+            <!-- Email List -->
+            <div class="card">
+                <div class="p-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="p-1 rounded hover:bg-gray-100">
+                                    <i data-feather="archive" class="w-4 h-4 text-gray-600"></i>
+                                </button>
+                                <button class="p-1 rounded hover:bg-gray-100">
+                                    <i data-feather="trash" class="w-4 h-4 text-gray-600"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <button class="p-1 rounded hover:bg-gray-100">
+                                <i data-feather="refresh-ccw" class="w-4 h-4 text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Items -->
+                <div class="divide-y divide-gray-200">
+                    <!-- Email 1 -->
+                    <div class="email-row p-4 hover:bg-gray-50 cursor-pointer">
+                        <div class="flex items-center">
+                            <div class="flex items-center w-12">
+                                <input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center">
+                                    <span class="email-category category-work mr-2">Work</span>
+                                    <span class="text-sm font-medium text-gray-900 truncate">Project Update - Q3 Deliverables</span>
+                                </div>
+                                <div class="flex items-center mt-1">
+                                    <span class="text-xs text-gray-500 truncate">From: manager@company.com</span>
+                                    <span class="mx-2 text-gray-300">•</span>
+                                    <span class="text-xs text-gray-500">2 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-xs px-2 py-1 bg-red-100 text-red-800 rounded-full">Urgency 5</span>
+                                <button class="ml-2 p-1 rounded-full hover:bg-gray-200">
+                                    <i data-feather="star" class="w-4 h-4 text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email 2 -->
+                    <div class="email-row p-4 hover:bg-gray-50 cursor-pointer">
+                        <div class="flex items-center">
+                            <div class="flex items-center w-12">
+                                <input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center">
+                                    <span class="email-category category-newsletters mr-2">Newsletter</span>
+                                    <span class="text-sm font-medium text-gray-900 truncate">Weekly Tech Digest - Latest Innovations</span>
+                                </div>
+                                <div class="flex items-center mt-1">
+                                    <span class="text-xs text-gray-500 truncate">From: newsletter@techdigest.com</span>
+                                    <span class="mx-2 text-gray-300">•</span>
+                                    <span class="text-xs text-gray-500">Yesterday</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">Urgency 1</span>
+                                <button class="ml-2 p-1 rounded-full hover:bg-gray-200">
+                                    <i data-feather="star" class="w-4 h-4 text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email 3 -->
+                    <div class="email-row p-4 hover:bg-gray-50 cursor-pointer">
+                        <div class="flex items-center">
+                            <div class="flex items-center w-12">
+                                <input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" checked>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center">
+                                    <span class="email-category category-financial mr-2">Financial</span>
+                                    <span class="text-sm font-medium text-gray-900 truncate">Invoice #INV-2023-0045</span>
+                                </div>
+                                <div class="flex items-center mt-1">
+                                    <span class="text-xs text-gray-500 truncate">From: billing@company.com</span>
+                                    <span class="mx-2 text-gray-300">•</span>
+                                    <span class="text-xs text-gray-500">3 days ago</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">Urgency 3</span>
+                                <button class="ml-2 p-1 rounded-full hover:bg-gray-200">
+                                    <i data-feather="star" class="w-4 h-4 text-yellow-500 fill-current"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email 4 -->
+                    <div class="email-row p-4 hover:bg-gray-50 cursor-pointer">
+                        <div class="flex items-center">
+                            <div class="flex items-center w-12">
+                                <input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center">
+                                    <span class="email-category category-opportunities mr-2">Opportunities</span>
+                                    <span class="text-sm font-medium text-gray-900 truncate">Job Opportunity - Senior Product Manager</span>
+                                </div>
+                                <div class="flex items-center mt-1">
+                                    <span class="text-xs text-gray-500 truncate">From: careers@techcorp.com</span>
+                                    <span class="mx-2 text-gray-300">•</span>
+                                    <span class="text-xs text-gray-500">1 week ago</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">Urgency 2</span>
+                                <button class="ml-2 p-1 rounded-full hover:bg-gray-200">
+                                    <i data-feather="star" class="w-4 h-4 text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email 5 -->
+                    <div class="email-row p-4 hover:bg-gray-50 cursor-pointer">
+                        <div class="flex items-center">
+                            <div class="flex items-center w-12">
+                                <input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center">
+                                    <span class="email-category category-personal mr-2">Personal</span>
+                                    <span class="text-sm font-medium text-gray-900 truncate">Family Gathering This Weekend</span>
+                                </div>
+                                <div class="flex items-center mt-1">
+                                    <span class="text-xs text-gray-500 truncate">From: family@example.com</span>
+                                    <span class="mx-2 text-gray-300">•</span>
+                                    <span class="text-xs text-gray-500">2 weeks ago</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">Urgency 1</span>
+                                <button class="ml-2 p-1 rounded-full hover:bg-gray-200">
+                                    <i data-feather="star" class="w-4 h-4 text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="p-4 border-t border-gray-200 flex items-center justify-between">
+                    <div class="text-sm text-gray-600">
+                        Showing 1 to 5 of 127 emails
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 rounded border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            Previous
+                        </button>
+                        <button class="px-3 py-1 rounded border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            1
+                        </button>
+                        <button class="px-3 py-1 rounded border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            2
+                        </button>
+                        <button class="px-3 py-1 rounded border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            3
+                        </button>
+                        <button class="px-3 py-1 rounded border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menu-toggle');
+            
+            if (window.innerWidth < 768 && 
+                !sidebar.contains(event.target) && 
+                event.target !== menuToggle && 
+                !menuToggle.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // Set active nav item
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                if (item.getAttribute('href') === window.location.pathname.split('/').pop()) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Filter buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

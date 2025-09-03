@@ -11,8 +11,8 @@ import { GmailTokens } from '@/integrations/gmail';
  */
 export function createMockGmailTokens(): GmailTokens {
   return {
-    accessToken: 'mock_access_token_' + Date.now(),
-    refreshToken: 'mock_refresh_token_' + Date.now(),
+    accessToken: `mock_access_token_${Date.now()}`,
+    refreshToken: `mock_refresh_token_${Date.now()}`,
     scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify',
     tokenType: 'Bearer',
     expiryDate: Date.now() + 3600000, // 1 hour from now

@@ -338,7 +338,7 @@ export function CalendarIntegration({
                         Current permissions: {gmailStatus?.scopes?.map((scope: string) => scope.replace('https://www.googleapis.com/auth/', '')).join(', ') || 'None'}
                       </p>
                       <div className="flex items-center space-x-2">
-                        <span className="text-xs text-amber-600">Go to Gmail Connection section and click "Disconnect" then "Connect" to get calendar access.</span>
+                        <span className="text-xs text-amber-600">Go to Gmail Connection section and click &quot;Disconnect&quot; then &quot;Connect&quot; to get calendar access.</span>
                       </div>
                     </div>
                   </div>
