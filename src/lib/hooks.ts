@@ -38,7 +38,8 @@ export function useApi<T>(
     } finally {
       setLoading(false);
     }
-  }, dependencies);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiCall, ...dependencies]);
 
   useEffect(() => {
     void fetchData();

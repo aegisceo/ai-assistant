@@ -22,9 +22,10 @@ curl http://localhost:8080 | head -5   # Should show NeuroFlow AI title
 
 ### **Critical Context**
 - ✅ **ALL 4 PHASES COMPLETE** - Ready for testing and PR
-- ✅ **18 API Endpoints** - Complete Gmail, AI, Calendar integration
+- ✅ **20+ API Endpoints** - Complete Gmail, AI, Calendar, Dashboard integration
 - ⚠️ **Two Frontends**: Use `ai-assistant-ui/` (NOT `site ui/`)
 - 🎯 **Production Ready** - Comprehensive TypeScript, security, error handling
+- 🎨 **UX OVERHAUL COMPLETE** - Priority dashboard, multi-account, AI summaries
 
 ## Development Commands
 
@@ -132,7 +133,11 @@ All async operations that can fail return `Result<T, E>` instead of throwing exc
 - `GET/DELETE /api/gmail/status` - Connection status and disconnect
 - `GET /api/gmail/auth` - Initiate OAuth flow
 - `GET /api/gmail/emails` - Fetch emails with filtering
-- `POST /api/emails/classify` - AI email classification (planned)
+- `GET/POST/DELETE /api/gmail/accounts` - Multi-account management
+- `GET /api/dashboard/priority-items` - Unified priority dashboard items
+- `POST /api/emails/classify` - AI email classification
+- `POST /api/classify/batch-with-progress` - Batch email classification
+- `GET /api/classify/progress` - Real-time progress tracking
 
 ## TypeScript Configuration
 
@@ -186,7 +191,7 @@ The Gmail integration is **production-ready** with:
 - ✅ Type-safe error handling
 - ✅ Comprehensive API routes
 
-**Next phases**: Frontend components, AI classification, calendar integration.
+**Recent Updates**: Priority dashboard UX overhaul, multi-account support, AI summarization.
 
 ## Cursor AI Configuration
 

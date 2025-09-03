@@ -245,7 +245,7 @@
                 <div class="card p-6" data-service="gmail">
                     <div class="flex justify-between items-start">
                         <div>
-                            <h3 class="text-lg font-medium text-gray-800">Gmail Connection</h3>
+                            <h3 class="text-lg font-medium text-gray-800">Gmail Accounts</h3>
                             <p class="text-gray-600 mt-1 connection-info">Not connected</p>
                         </div>
                         <div class="flex items-center">
@@ -253,12 +253,24 @@
                             <span class="ml-2 text-red-600 font-medium status-text">Disconnected</span>
                         </div>
                     </div>
-                    <div class="mt-4">
+                    
+                    <!-- Connected Accounts List -->
+                    <div class="mt-4 connected-accounts-list" style="display: none;">
+                        <!-- Accounts will be populated here -->
+                    </div>
+                    
+                    <div class="mt-4 gmail-actions">
                         <button class="text-sm text-blue-600 hover:text-blue-800 font-medium" data-action="connect-gmail">
+                            <i class="fas fa-link mr-1"></i>
                             Connect Gmail
                         </button>
+                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium ml-4" data-action="add-gmail-account" style="display: none;">
+                            <i class="fas fa-plus mr-1"></i>
+                            Add Account
+                        </button>
                         <button class="text-sm text-gray-600 hover:text-gray-800 font-medium ml-4" data-action="refresh-connection">
-                            Refresh Status
+                            <i class="fas fa-refresh mr-1"></i>
+                            Refresh
                         </button>
                     </div>
                 </div>

@@ -11,7 +11,7 @@ class NeuroFlowApp {
         this.isInitialized = false;
         this.refreshInterval = null;
         this.currentPage = this.getCurrentPage();
-        this.demoMode = false;
+        // No demo mode - always require real authentication
         this.currentUser = null;
     }
 
@@ -32,9 +32,8 @@ class NeuroFlowApp {
             // Initialize Supabase authentication
             await this.initializeAuthentication();
 
-            // Check backend availability silently
-            const backendAvailable = await this.api.checkBackendHealth();
-            this.demoMode = !backendAvailable;
+            // Check backend availability for proper error handling
+            await this.api.checkBackendHealth();
 
             // Check for OAuth callback
             this.handleOAuthCallback();
@@ -217,6 +216,22 @@ class NeuroFlowApp {
                     event.preventDefault();
                     this.signOut();
                     break;
+                case 'expand-priority-inbox':
+                    event.preventDefault();
+                    this.expandPriorityInbox();
+                    break;
+                case 'collapse-priority-inbox':
+                    event.preventDefault();
+                    this.collapsePriorityInbox();
+                    break;
+                case 'add-gmail-account':
+                    event.preventDefault();
+                    this.addGmailAccount();
+                    break;
+                case 'remove-account':
+                    event.preventDefault();
+                    this.removeGmailAccount(target.dataset.accountEmail);
+                    break;
             }
         });
     }
@@ -362,9 +377,7 @@ class NeuroFlowApp {
             
             // Show context-aware error message
             let errorMessage;
-            if (this.demoMode) {
-                errorMessage = 'Gmail connection requires backend server. Currently running in demo mode.';
-            } else if (result && result.code === 'NETWORK_ERROR') {
+            if (result && result.code === 'NETWORK_ERROR') {
                 errorMessage = 'Cannot connect to backend server. Please check if server is running on localhost:3000.';
             } else if (result && result.code === 'BACKEND_UNAVAILABLE') {
                 errorMessage = 'Backend server not responding. Please start the Next.js server.';
@@ -439,18 +452,17 @@ class NeuroFlowApp {
                 this.ui.showLoadingState(emailContainer, 'Loading priority emails...');
             }
 
-            // Load priority emails for dashboard
-            const smartEmails = await this.api.getSmartFilteredEmails({
-                limit: 5,
-                priority: 'high'
+            // Load priority items for dashboard
+            const priorityItems = await this.api.getPriorityItems({
+                limit: 10
             });
 
-            if (smartEmails.success && smartEmails.data) {
-                this.ui.updateEmailList(smartEmails.data.emails || []);
+            if (priorityItems.success && priorityItems.data) {
+                this.ui.updatePriorityDashboard(priorityItems.data);
             } else {
-                // Show sample data if API is not available
-                console.log('Using sample data - backend not available');
-                this.showSampleData();
+                // Show authentication required instead of sample data
+                console.log('Authentication required - no priority items');
+                this.showAuthenticationRequired();
             }
 
             // Update AI processing indicators
@@ -476,46 +488,33 @@ class NeuroFlowApp {
 
         } catch (error) {
             console.error('❌ Failed to load dashboard data:', error);
-            this.showSampleData();
+            this.showAuthenticationRequired();
         }
     }
 
     /**
-     * Show sample data when backend is not available
+     * Show authentication required screen
      */
-    showSampleData() {
-        const sampleEmails = [
-            {
-                id: 'sample-1',
-                subject: 'Urgent: Project Deadline Approaching',
-                from: 'manager@company.com',
-                snippet: 'Action required: Please review the project deliverables by EOD',
-                date: new Date(Date.now() - 2 * 60 * 60 * 1000),
-                priority: 5,
-                category: 'work',
-                urgent: true
-            },
-            {
-                id: 'sample-2',
-                subject: 'Meeting Reminder: Team Sync',
-                from: 'team@company.com',
-                snippet: 'Reminder: Weekly team sync meeting in 30 minutes',
-                date: new Date(Date.now() - 24 * 60 * 60 * 1000),
-                priority: 3,
-                category: 'work'
-            },
-            {
-                id: 'sample-3',
-                subject: 'Newsletter: Industry Updates',
-                from: 'updates@industry.com',
-                snippet: 'Weekly industry insights and trends',
-                date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-                priority: 1,
-                category: 'newsletter'
-            }
-        ];
-
-        this.ui.updateEmailList(sampleEmails);
+    showAuthenticationRequired() {
+        const emailContainer = document.querySelector('.priority-inbox-emails');
+        if (emailContainer) {
+            emailContainer.innerHTML = `
+                <div class="text-center py-12">
+                    <div class="mb-6">
+                        <i class="fas fa-shield-alt text-4xl text-blue-500"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Authentication Required</h3>
+                    <p class="text-gray-600 mb-6">Please connect your Gmail account to view your priority emails and calendar events.</p>
+                    <button 
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        data-action="connect-gmail"
+                    >
+                        <i class="fas fa-link mr-2"></i>
+                        Connect Gmail Account
+                    </button>
+                </div>
+            `;
+        }
     }
 
     /**
@@ -538,117 +537,16 @@ class NeuroFlowApp {
                 this.ui.updateEmailList(emails.data.emails || []);
                 this.ui.updateEmailStats(emails.data.stats || {});
             } else {
-                // Show sample data with more emails for the emails page
-                console.log('Using expanded sample data - backend not available');
-                this.showExpandedSampleData();
+                // Show authentication required instead of sample data
+                console.log('Authentication required for emails - no sample data');
+                this.showAuthenticationRequired();
             }
         } catch (error) {
             console.error('❌ Failed to load emails data:', error);
-            this.showExpandedSampleData();
+            this.showAuthenticationRequired();
         }
     }
 
-    /**
-     * Show expanded sample data for emails page
-     */
-    showExpandedSampleData() {
-        const sampleEmails = [
-            {
-                id: 'sample-1',
-                subject: 'Urgent: Project Deadline Approaching - Action Required',
-                from: 'manager@company.com',
-                snippet: 'The Q3 project deliverables are due by end of day. Please review and approve the final documents in the shared folder.',
-                date: new Date(Date.now() - 2 * 60 * 60 * 1000),
-                priority: 5,
-                category: 'work',
-                urgent: true,
-                confidence: 0.95
-            },
-            {
-                id: 'sample-2',
-                subject: 'Meeting Reminder: Weekly Team Sync',
-                from: 'team@company.com',
-                snippet: 'Reminder for our weekly team sync meeting in 30 minutes. Please prepare your status updates.',
-                date: new Date(Date.now() - 24 * 60 * 60 * 1000),
-                priority: 3,
-                category: 'work',
-                confidence: 0.88
-            },
-            {
-                id: 'sample-3',
-                subject: 'Investment Opportunity: New Portfolio Options',
-                from: 'advisor@financialgroup.com',
-                snippet: 'We have identified several high-yield investment opportunities that align with your portfolio goals.',
-                date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-                priority: 4,
-                category: 'opportunity',
-                confidence: 0.92
-            },
-            {
-                id: 'sample-4',
-                subject: 'Newsletter: Industry Tech Trends Weekly',
-                from: 'updates@techinsider.com',
-                snippet: 'This week: AI advances, cloud computing updates, and the latest in cybersecurity trends.',
-                date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-                priority: 1,
-                category: 'newsletter',
-                confidence: 0.99
-            },
-            {
-                id: 'sample-5',
-                subject: 'Bank Statement Available - April 2024',
-                from: 'statements@bank.com',
-                snippet: 'Your monthly bank statement for April 2024 is now available for download.',
-                date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                priority: 2,
-                category: 'financial',
-                confidence: 0.97
-            },
-            {
-                id: 'sample-6',
-                subject: 'Re: Family Dinner Plans This Weekend',
-                from: 'sarah@personal.com',
-                snippet: 'Sounds great! I can bring dessert. What time should we arrive on Saturday?',
-                date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
-                priority: 2,
-                category: 'personal',
-                confidence: 0.85
-            },
-            {
-                id: 'sample-7',
-                subject: 'Congratulations! You won $1,000,000',
-                from: 'winner@suspicious.com',
-                snippet: 'Click here to claim your prize! You are the lucky winner of our international lottery.',
-                date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
-                priority: 1,
-                category: 'spam',
-                confidence: 0.99
-            },
-            {
-                id: 'sample-8',
-                subject: 'Conference Invitation: AI Summit 2024',
-                from: 'events@aisummit.org',
-                snippet: 'Join industry leaders for three days of AI innovation, networking, and breakthrough presentations.',
-                date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
-                priority: 4,
-                category: 'opportunity',
-                confidence: 0.91
-            }
-        ];
-
-        this.ui.updateEmailList(sampleEmails);
-        
-        // Update stats
-        const stats = {
-            total: sampleEmails.length,
-            urgent: sampleEmails.filter(e => e.urgent || e.priority >= 4).length,
-            work: sampleEmails.filter(e => e.category === 'work').length,
-            personal: sampleEmails.filter(e => e.category === 'personal').length,
-            unread: Math.floor(sampleEmails.length * 0.6) // Simulate 60% unread
-        };
-        
-        this.ui.updateEmailStats(stats);
-    }
 
     /**
      * Load calendar data
@@ -697,19 +595,14 @@ class NeuroFlowApp {
             this.ui.showAIProcessingIndicator(emailId);
             this.ui.showNotification('Claude AI is analyzing email...', 'info');
             
-            if (this.demoMode) {
-                // Simulate AI classification in demo mode
-                await this.simulateAIClassification(emailId);
+            // Real API call only - no demo mode
+            const result = await this.api.classifyEmail(emailId);
+            
+            if (result.success) {
+                this.ui.showNotification('Email classified successfully!', 'success');
+                await this.loadPageData(); // Refresh data
             } else {
-                // Real API call
-                const result = await this.api.classifyEmail(emailId);
-                
-                if (result.success) {
-                    this.ui.showNotification('Email classified successfully!', 'success');
-                    await this.loadPageData(); // Refresh data
-                } else {
-                    throw new Error(result.error || 'Classification failed');
-                }
+                throw new Error(result.error || 'Classification failed');
             }
         } catch (error) {
             console.error('❌ Failed to classify email:', error);
@@ -718,128 +611,16 @@ class NeuroFlowApp {
         }
     }
 
-    /**
-     * Simulate AI classification in demo mode
-     */
-    async simulateAIClassification(emailId) {
-        // Find the email in our sample data
-        const email = this.ui.state.emails.find(e => e.id === emailId);
-        if (!email) return;
-
-        // Simulate AI thinking time (2-4 seconds)
-        const thinkingTime = 2000 + Math.random() * 2000;
-        
-        // Update AI processing progress
-        let progress = 0;
-        const progressInterval = setInterval(() => {
-            progress += Math.random() * 15;
-            if (progress > 95) progress = 95;
-            this.ui.updateAIProgress(emailId, progress);
-        }, 200);
-
-        await new Promise(resolve => setTimeout(resolve, thinkingTime));
-        clearInterval(progressInterval);
-
-        // Simulate AI making improvements to classification
-        const improvements = this.generateAIImprovements(email);
-        
-        // Apply improvements
-        Object.assign(email, improvements);
-        
-        // Update UI with new classification
-        this.ui.updateAIProgress(emailId, 100);
-        this.ui.hideAIProcessingIndicator(emailId);
-        
-        // Show detailed results
-        this.ui.showAIClassificationResults(emailId, improvements);
-        
-        // Refresh display
-        await this.loadPageData();
-        
-        this.ui.showNotification('Claude AI classification complete!', 'success');
-    }
-
-    /**
-     * Generate AI improvements for email classification
-     */
-    generateAIImprovements(email) {
-        const improvements = {};
-        
-        // Simulate AI improving confidence
-        if (email.confidence < 0.95) {
-            improvements.confidence = Math.min(0.99, email.confidence + 0.1 + Math.random() * 0.1);
-        }
-
-        // Simulate AI adjusting priority based on content analysis
-        const subjectLower = email.subject.toLowerCase();
-        if (subjectLower.includes('urgent') && email.priority < 5) {
-            improvements.priority = 5;
-            improvements.urgent = true;
-        } else if (subjectLower.includes('deadline') && email.priority < 4) {
-            improvements.priority = 4;
-        }
-
-        // Simulate AI improving category accuracy
-        if (subjectLower.includes('investment') || subjectLower.includes('financial')) {
-            improvements.category = 'financial';
-        } else if (subjectLower.includes('meeting') || subjectLower.includes('sync')) {
-            improvements.category = 'work';
-        } else if (subjectLower.includes('newsletter') || subjectLower.includes('updates')) {
-            improvements.category = 'newsletter';
-        }
-
-        // Add AI reasoning
-        improvements.aiReasoning = this.generateAIReasoning(email, improvements);
-
-        return improvements;
-    }
-
-    /**
-     * Generate AI reasoning explanation
-     */
-    generateAIReasoning(email, improvements) {
-        const reasons = [];
-        
-        if (improvements.priority) {
-            reasons.push(`Priority adjusted to ${improvements.priority} based on urgency indicators`);
-        }
-        
-        if (improvements.category) {
-            reasons.push(`Recategorized as "${improvements.category}" based on content analysis`);
-        }
-        
-        if (improvements.confidence) {
-            reasons.push(`Confidence increased to ${Math.round(improvements.confidence * 100)}% after deep analysis`);
-        }
-        
-        return reasons.length > 0 ? reasons.join('. ') : 'Classification confirmed with high confidence';
-    }
 
     /**
      * Set up periodic refresh and real-time updates
      */
     setupPeriodicRefresh() {
-        // Quick status check every 30 seconds when in demo mode
-        if (this.demoMode) {
-            this.refreshInterval = setInterval(async () => {
-                const wasInDemoMode = this.demoMode;
-                const backendAvailable = await this.api.checkBackendHealth();
-                
-                // If backend becomes available, switch out of demo mode
-                if (wasInDemoMode && backendAvailable) {
-                    this.demoMode = false;
-                    this.ui.showNotification('Backend server detected! Switching to live mode.', 'success');
-                    await this.checkConnectionStatus();
-                    await this.loadPageData();
-                }
-            }, 30 * 1000);
-        } else {
-            // Normal refresh every 5 minutes when backend is available
-            this.refreshInterval = setInterval(async () => {
-                await this.checkConnectionStatus();
-                await this.loadPageData();
-            }, 5 * 60 * 1000);
-        }
+        // Normal refresh every 5 minutes
+        this.refreshInterval = setInterval(async () => {
+            await this.checkConnectionStatus();
+            await this.loadPageData();
+        }, 5 * 60 * 1000);
 
         // Also update working hours display every minute
         this.workingHoursInterval = setInterval(() => {
@@ -1021,35 +802,97 @@ class NeuroFlowApp {
         }
     }
 
+
     /**
-     * Show demo mode banner
+     * Expand priority inbox to show all items
      */
-    showDemoModeBanner() {
-        const banner = document.createElement('div');
-        banner.className = 'fixed top-0 left-0 right-0 bg-blue-100 border-b border-blue-200 text-blue-800 px-4 py-2 text-sm z-50';
-        banner.innerHTML = `
-            <div class="flex items-center justify-between max-w-7xl mx-auto">
-                <div class="flex items-center">
-                    <i class="fas fa-info-circle mr-2"></i>
-                    <span><strong>Demo Mode:</strong> Backend server not available. Using sample data for demonstration.</span>
-                </div>
-                <button class="text-blue-600 hover:text-blue-800 ml-4" onclick="this.parentElement.parentElement.remove()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        `;
+    expandPriorityInbox() {
+        const priorityItems = this.ui.state.priorityItems;
+        if (!priorityItems || priorityItems.length <= 5) return;
 
-        // Add some top padding to the body to account for the banner
-        document.body.style.paddingTop = '40px';
-        document.body.appendChild(banner);
+        const container = document.querySelector('.priority-inbox-emails');
+        if (!container) return;
 
-        // Auto-remove after 10 seconds
-        setTimeout(() => {
-            if (banner.parentElement) {
-                banner.remove();
-                document.body.style.paddingTop = '';
+        // Show all items
+        this.ui.updatePriorityDashboard({ items: priorityItems }, true); // true = show all
+        
+        // Update the expand button to collapse
+        const expandBtn = container.querySelector('[data-action="expand-priority-inbox"]');
+        if (expandBtn) {
+            expandBtn.setAttribute('data-action', 'collapse-priority-inbox');
+            expandBtn.innerHTML = `
+                <i class="fas fa-chevron-up mr-2"></i>
+                Show Less
+            `;
+        }
+    }
+
+    /**
+     * Collapse priority inbox to show top 5 items
+     */
+    collapsePriorityInbox() {
+        const priorityItems = this.ui.state.priorityItems;
+        if (!priorityItems) return;
+
+        // Show only top 5 items
+        this.ui.updatePriorityDashboard({ items: priorityItems }, false); // false = show top 5
+    }
+
+    /**
+     * Add additional Gmail account
+     */
+    async addGmailAccount() {
+        try {
+            const accountLabel = prompt('Enter a label for this Gmail account (e.g., "Work", "Personal"):');
+            if (!accountLabel) return;
+
+            console.log('🔗 Adding Gmail account...');
+            
+            this.ui.showNotification('Redirecting to Gmail authentication for additional account...', 'info');
+            const result = await this.api.addGmailAccount(accountLabel);
+            
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to initiate OAuth flow for additional account');
             }
-        }, 10000);
+            
+            // Redirect will happen automatically
+            
+        } catch (error) {
+            console.error('❌ Failed to add Gmail account:', error);
+            this.ui.showNotification('Failed to add Gmail account. Please try again.', 'error');
+        }
+    }
+
+    /**
+     * Remove Gmail account
+     */
+    async removeGmailAccount(accountEmail) {
+        if (!accountEmail) return;
+
+        try {
+            const confirmed = confirm(`Are you sure you want to remove the Gmail account ${accountEmail}?`);
+            if (!confirmed) return;
+
+            console.log('🗑️ Removing Gmail account...');
+            const result = await this.api.removeGmailAccount(accountEmail);
+            
+            if (result.success) {
+                this.ui.showNotification(`Gmail account ${accountEmail} removed successfully`, 'success');
+                
+                // Refresh connection status to update UI
+                await this.checkConnectionStatus();
+                
+                if (result.data.was_primary) {
+                    this.ui.showNotification('Primary account was removed. Please set a new primary account if needed.', 'warning');
+                }
+            } else {
+                throw new Error(result.error || 'Failed to remove Gmail account');
+            }
+            
+        } catch (error) {
+            console.error('❌ Failed to remove Gmail account:', error);
+            this.ui.showNotification('Failed to remove Gmail account. Please try again.', 'error');
+        }
     }
 
     /**

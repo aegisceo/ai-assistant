@@ -144,14 +144,6 @@ export function CalendarIntegration({
     })
   );
 
-  const detectMeetings = async (emailsToAnalyze: Email[]) => {
-    const result = await detectMeetingsRaw(emailsToAnalyze);
-    if (result) {
-      setMeetingDetections(result);
-    }
-    return result;
-  };
-
   // Event creation functionality
   const { 
     loading: createLoading, 
@@ -174,10 +166,18 @@ export function CalendarIntegration({
 
   // Run meeting detection when emails are available
   React.useEffect(() => {
+    const detectMeetings = async (emailsToAnalyze: Email[]) => {
+      const result = await detectMeetingsRaw(emailsToAnalyze);
+      if (result) {
+        setMeetingDetections(result);
+      }
+      return result;
+    };
+
     if (showMeetingDetection && emails.length > 0 && selectedTab === 'meetings') {
       void detectMeetings(emails);
     }
-  }, [showMeetingDetection, emails, selectedTab, detectMeetings]);
+  }, [showMeetingDetection, emails, selectedTab, detectMeetingsRaw]);
 
   const handleCreateEvent = useCallback(async (): Promise<void> => {
     if (!eventFormData.title || !eventFormData.start || !eventFormData.end) {

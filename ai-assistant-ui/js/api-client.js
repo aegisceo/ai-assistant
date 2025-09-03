@@ -109,6 +109,24 @@ class ApiClient {
         return this.request('/api/gmail/status', { method: 'DELETE' });
     }
 
+    async getGmailAccounts() {
+        return this.request('/api/gmail/accounts');
+    }
+
+    async addGmailAccount(accountLabel) {
+        return this.request('/api/gmail/accounts', {
+            method: 'POST',
+            body: JSON.stringify({ account_label: accountLabel })
+        });
+    }
+
+    async removeGmailAccount(accountEmail) {
+        return this.request('/api/gmail/accounts', {
+            method: 'DELETE',
+            body: JSON.stringify({ account_email: accountEmail })
+        });
+    }
+
     async getEmails(filters = {}) {
         const params = new URLSearchParams(filters);
         return this.request(`/api/gmail/emails?${params}`);
@@ -151,6 +169,12 @@ class ApiClient {
     async getUrgentNotifications(options = {}) {
         const params = new URLSearchParams(options);
         return this.request(`/api/notifications/urgent?${params}`);
+    }
+
+    // Dashboard Priority Items
+    async getPriorityItems(options = {}) {
+        const params = new URLSearchParams(options);
+        return this.request(`/api/dashboard/priority-items?${params}`);
     }
 
     // Feedback
