@@ -144,14 +144,6 @@ export function CalendarIntegration({
     })
   );
 
-  const detectMeetings = async (emailsToAnalyze: Email[]) => {
-    const result = await detectMeetingsRaw(emailsToAnalyze);
-    if (result) {
-      setMeetingDetections(result);
-    }
-    return result;
-  };
-
   // Event creation functionality
   const { 
     loading: createLoading, 
@@ -174,10 +166,18 @@ export function CalendarIntegration({
 
   // Run meeting detection when emails are available
   React.useEffect(() => {
+    const detectMeetings = async (emailsToAnalyze: Email[]) => {
+      const result = await detectMeetingsRaw(emailsToAnalyze);
+      if (result) {
+        setMeetingDetections(result);
+      }
+      return result;
+    };
+
     if (showMeetingDetection && emails.length > 0 && selectedTab === 'meetings') {
       void detectMeetings(emails);
     }
-  }, [showMeetingDetection, emails, selectedTab, detectMeetings]);
+  }, [showMeetingDetection, emails, selectedTab, detectMeetingsRaw]);
 
   const handleCreateEvent = useCallback(async (): Promise<void> => {
     if (!eventFormData.title || !eventFormData.start || !eventFormData.end) {
@@ -338,7 +338,7 @@ export function CalendarIntegration({
                         Current permissions: {gmailStatus?.scopes?.map((scope: string) => scope.replace('https://www.googleapis.com/auth/', '')).join(', ') || 'None'}
                       </p>
                       <div className="flex items-center space-x-2">
-                        <span className="text-xs text-amber-600">Go to Gmail Connection section and click "Disconnect" then "Connect" to get calendar access.</span>
+                        <span className="text-xs text-amber-600">Go to Gmail Connection section and click &quot;Disconnect&quot; then &quot;Connect&quot; to get calendar access.</span>
                       </div>
                     </div>
                   </div>

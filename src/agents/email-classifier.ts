@@ -45,6 +45,61 @@ export class EmailClassifier {
   }
 
   /**
+   * Generate AI summary for priority dashboard
+   */
+  async generateSummary(params: {
+    subject: string;
+    snippet: string;
+    classification: EmailClassification;
+  }): Promise<Result<string, ClaudeIntegrationError>> {
+    const { subject, snippet, classification } = params;
+    
+    const summaryPrompt = `
+Summarize this email in exactly one sentence (maximum two sentences if absolutely necessary) for a priority dashboard. Focus on what action is needed or what the user should know.
+
+Email Subject: "${subject}"
+Email Snippet: "${snippet}"
+AI Classification: ${classification.category} (urgency: ${classification.urgency}/5, importance: ${classification.importance}/5)
+Action Required: ${classification.actionRequired}
+
+Rules:
+- Maximum 1 sentence (2 only if critical information would be lost)
+- Focus on actionable information or key insights
+- Use clear, professional language
+- Include urgency indicators if priority is 4+ ("urgent", "deadline", etc.)
+- Mention sender/context only if relevant to action
+
+Examples:
+- "Project deliverables require review and approval by end of day"
+- "Team sync meeting starts in 30 minutes"
+- "Investment portfolio recommendations available for review"
+- "Bank statement ready for download"
+`;
+
+    const result = await this.claude.analyze(summaryPrompt);
+    
+    if (!result.success) {
+      return result;
+    }
+
+    // Clean and format the summary
+    let summary = result.data.content.trim();
+    
+    // Remove quotes if the AI added them
+    summary = summary.replace(/^["']|["']$/g, '');
+    
+    // Ensure it ends with a period
+    if (!summary.endsWith('.') && !summary.endsWith('!') && !summary.endsWith('?')) {
+      summary += '.';
+    }
+
+    return {
+      success: true,
+      data: summary,
+    };
+  }
+
+  /**
    * Classify a single email using Claude
    */
   async classifyEmail(

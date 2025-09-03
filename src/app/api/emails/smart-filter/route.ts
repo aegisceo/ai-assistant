@@ -65,22 +65,22 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       .single();
 
     const userPreferences: UserPreferences = preferencesData ? {
-      emailClassificationEnabled: preferencesData.email_classification_enabled ?? true,
-      autoUnsubscribeEnabled: preferencesData.auto_unsubscribe_enabled ?? false,
-      priorityCategories: (preferencesData.priority_categories ?? ['work', 'financial']) as readonly EmailCategory[],
-      workingHours: preferencesData.working_hours ? {
-        start: preferencesData.working_hours.start ?? '09:00',
-        end: preferencesData.working_hours.end ?? '17:00',
-        days: (preferencesData.working_hours.days ?? [1, 2, 3, 4, 5]) as readonly (0 | 1 | 2 | 3 | 4 | 5 | 6)[],
+      emailClassificationEnabled: (preferencesData as any).email_classification_enabled ?? true,
+      autoUnsubscribeEnabled: (preferencesData as any).auto_unsubscribe_enabled ?? false,
+      priorityCategories: ((preferencesData as any).priority_categories ?? ['work', 'financial']) as readonly EmailCategory[],
+      workingHours: (preferencesData as any).working_hours ? {
+        start: (preferencesData as any).working_hours.start ?? '09:00',
+        end: (preferencesData as any).working_hours.end ?? '17:00',
+        days: ((preferencesData as any).working_hours.days ?? [1, 2, 3, 4, 5]) as readonly (0 | 1 | 2 | 3 | 4 | 5 | 6)[],
       } : {
         start: '09:00',
         end: '17:00',
         days: [1, 2, 3, 4, 5] as const,
       },
-      notificationSettings: preferencesData.notification_settings ? {
-        urgentEmails: preferencesData.notification_settings.urgentEmails ?? true,
-        upcomingEvents: preferencesData.notification_settings.upcomingEvents ?? true,
-        missedOpportunities: preferencesData.notification_settings.missedOpportunities ?? false,
+      notificationSettings: (preferencesData as any).notification_settings ? {
+        urgentEmails: (preferencesData as any).notification_settings.urgentEmails ?? true,
+        upcomingEvents: (preferencesData as any).notification_settings.upcomingEvents ?? true,
+        missedOpportunities: (preferencesData as any).notification_settings.missedOpportunities ?? false,
       } : {
         urgentEmails: true,
         upcomingEvents: true,
@@ -184,7 +184,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       .in('gmail_id', emailIds);
 
     const classificationMap = new Map(
-      (classifications || []).map(item => [item.gmail_id, item.classification])
+      (classifications || []).map((item: any) => [item.gmail_id, item.classification])
     );
 
     // Enhanced email data with AI classification and priority scoring

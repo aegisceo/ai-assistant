@@ -33,7 +33,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const state = generateSecureState();
     
     // Store the state parameter associated with the user for validation
-    const { error: stateError } = await supabase
+    const { error: stateError } = await (supabase as any)
       .from('oauth_states')
       .insert({
         user_id: user.id,

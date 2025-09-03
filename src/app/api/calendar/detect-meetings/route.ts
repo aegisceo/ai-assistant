@@ -212,7 +212,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Store meeting detections for analytics
     if (meetingRequestCount > 0) {
-      await supabase
+      await (supabase as any)
         .from('meeting_detections')
         .insert({
           user_id: user.id,
@@ -225,7 +225,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         .then(() => {
           // Logging successful
         });
-      // Note: Ignoring potential logging errors to not block the response
     }
 
     return NextResponse.json({

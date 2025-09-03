@@ -2,12 +2,43 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🧠 MEMORY PERSISTENCE SYSTEM
+
+### **Project State Files (READ FIRST)**
+- **`PROJECT_MEMORY.md`** - ⭐ COMPREHENSIVE project status, architecture, and current state
+- **`.claude/session_history.md`** - Session-by-session conversation context and decisions
+- **`IMPLEMENTATION_PROGRESS.md`** - ⚠️ OUTDATED (claims phases pending, but all are complete)
+
+### **Quick Status Check**
+```bash
+# Current Servers (if running)
+Backend: http://localhost:3000/api/health
+Frontend: http://localhost:8080 (ai-assistant-ui directory)
+
+# Quick architecture verification
+curl http://localhost:3000/api/health  # Should return healthy status
+curl http://localhost:8080 | head -5   # Should show NeuroFlow AI title
+```
+
+### **Critical Context**
+- ✅ **ALL 4 PHASES COMPLETE** - Ready for testing and PR
+- ✅ **20+ API Endpoints** - Complete Gmail, AI, Calendar, Dashboard integration
+- ⚠️ **Two Frontends**: Use `ai-assistant-ui/` (NOT `site ui/`)
+- 🎯 **Production Ready** - Comprehensive TypeScript, security, error handling
+- 🎨 **UX OVERHAUL COMPLETE** - Priority dashboard, multi-account, AI summaries
+
 ## Development Commands
 
 ### Core Development
 ```bash
-# Development server
+# Development server (smart startup - handles port conflicts)
+npm run start:dev
+
+# Regular development server (port 3000)
 npm run dev
+
+# Kill any process using port 3000
+npm run kill:3000
 
 # Build application
 npm run build
@@ -102,7 +133,11 @@ All async operations that can fail return `Result<T, E>` instead of throwing exc
 - `GET/DELETE /api/gmail/status` - Connection status and disconnect
 - `GET /api/gmail/auth` - Initiate OAuth flow
 - `GET /api/gmail/emails` - Fetch emails with filtering
-- `POST /api/emails/classify` - AI email classification (planned)
+- `GET/POST/DELETE /api/gmail/accounts` - Multi-account management
+- `GET /api/dashboard/priority-items` - Unified priority dashboard items
+- `POST /api/emails/classify` - AI email classification
+- `POST /api/classify/batch-with-progress` - Batch email classification
+- `GET /api/classify/progress` - Real-time progress tracking
 
 ## TypeScript Configuration
 
@@ -156,7 +191,7 @@ The Gmail integration is **production-ready** with:
 - ✅ Type-safe error handling
 - ✅ Comprehensive API routes
 
-**Next phases**: Frontend components, AI classification, calendar integration.
+**Recent Updates**: Priority dashboard UX overhaul, multi-account support, AI summarization.
 
 ## Cursor AI Configuration
 

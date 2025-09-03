@@ -235,7 +235,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Log the event creation
-    await supabase
+    await (supabase as any)
       .from('calendar_events')
       .insert({
         user_id: user.id,

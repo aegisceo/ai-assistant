@@ -28,7 +28,7 @@ interface SmartFilters {
 }
 
 type EnhancedEmail = Email & {
-  readonly classification?: EmailClassification;
+  readonly classification?: EmailClassification | undefined;
   readonly priorityScore: number;
   readonly isHighPriority: boolean;
   readonly needsClassification: boolean;
@@ -57,7 +57,7 @@ export function SmartEmailList({
   //   _refresh: refreshTrigger, // Force refetch when triggered
   // }), [maxResults, filters, pageToken, refreshTrigger]);
 
-  // Fetch emails using basic Gmail API (temporarily simplified)
+  // Fetch emails with existing classifications from database
   const { 
     data: emailsResponse, 
     loading, 
@@ -65,50 +65,106 @@ export function SmartEmailList({
     refetch: _refetch 
   } = useApi(
     async () => {
-      console.log('Fetching emails...');
-      const response = await fetch(`/api/gmail/emails?maxResults=${maxResults}&labelIds=INBOX`, {
-        credentials: 'include', // Include cookies for authentication
+      console.log('Fetching emails with classifications...');
+      
+      // Fetch emails from Gmail API
+      const gmailResponse = await fetch(`/api/gmail/emails?maxResults=${maxResults}&labelIds=INBOX`, {
+        credentials: 'include',
       });
       
-      console.log('Response status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Fetch error:', errorText);
-        return { success: false, error: new Error(`HTTP ${response.status}: ${response.statusText}`) };
+      if (!gmailResponse.ok) {
+        const errorText = await gmailResponse.text();
+        console.error('Gmail fetch error:', errorText);
+        return { success: false, error: new Error(`HTTP ${gmailResponse.status}: ${gmailResponse.statusText}`) };
       }
       
-      const result = await response.json() as { success: boolean; data?: { emails: Email[]; nextPageToken?: string; totalEstimate: number }; error?: string };
-      console.log('API result:', result);
+      const gmailResult = await gmailResponse.json() as { success: boolean; data?: { emails: Email[]; nextPageToken?: string; totalEstimate: number }; error?: string };
       
-      if (!result.success) {
-        return { success: false, error: new Error(result.error || 'Failed to fetch emails') };
+      if (!gmailResult.success) {
+        return { success: false, error: new Error(gmailResult.error || 'Failed to fetch emails') };
       }
 
-      // Convert to expected format with mock smart insights
-      const convertedData = {
-        emails: result.data?.emails.map((email): EnhancedEmail => ({
+      const rawEmails = gmailResult.data?.emails || [];
+      
+      // Fetch stored classifications for these emails
+      const classificationResponse = await fetch('/api/emails/classifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ 
+          emailIds: rawEmails.map(email => email.id) 
+        }),
+      });
+
+      let storedClassifications: Record<string, EmailClassification> = {};
+      if (classificationResponse.ok) {
+        const classResult = await classificationResponse.json() as { 
+          success: boolean; 
+          data?: Record<string, EmailClassification>; 
+        };
+        if (classResult.success && classResult.data) {
+          storedClassifications = classResult.data;
+        }
+      }
+
+      // Calculate priority scores and determine if emails need classification
+      const enhancedEmails = rawEmails.map((email): EnhancedEmail => {
+        const classification = storedClassifications[email.id];
+        const priorityScore = classification 
+          ? calculatePriorityScore(classification)
+          : 0;
+        const isHighPriority = classification 
+          ? (classification.urgency >= 4 || classification.importance >= 4)
+          : false;
+        const needsClassification = !classification;
+
+        return {
           ...email,
           date: typeof email.date === 'string' ? new Date(email.date) : email.date,
-          priorityScore: Math.random() * 10, // Mock priority score
-          isHighPriority: Math.random() > 0.7,
-          needsClassification: Math.random() > 0.5,
-        })) || [],
+          classification,
+          priorityScore,
+          isHighPriority,
+          needsClassification,
+        };
+      });
+
+      // Calculate real insights from classification data
+      const classifiedEmails = enhancedEmails.filter(email => email.classification);
+      const urgentCount = classifiedEmails.filter(email => email.classification!.urgency >= 4).length;
+      const actionRequiredCount = classifiedEmails.filter(email => email.classification!.actionRequired).length;
+      const highPriorityCount = enhancedEmails.filter(email => email.isHighPriority).length;
+      const unclassifiedCount = enhancedEmails.filter(email => email.needsClassification).length;
+
+      const categoryBreakdown = classifiedEmails.reduce((acc, email) => {
+        const category = email.classification!.category;
+        acc[category] = (acc[category] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      const recommendations = generateRecommendations({
+        unclassifiedCount,
+        urgentCount,
+        actionRequiredCount,
+        totalEmails: enhancedEmails.length,
+      });
+
+      const convertedData = {
+        emails: enhancedEmails,
         insights: {
-          summary: `Found ${result.data?.emails.length || 0} emails in your inbox`,
-          recommendations: ['Check high priority emails first', 'Review unread messages'],
-          urgentCount: Math.floor((result.data?.emails.length || 0) * 0.1),
-          overdueActionItems: Math.floor((result.data?.emails.length || 0) * 0.05),
-          categoryBreakdown: { work: 5, personal: 3, other: 2 },
+          summary: `Found ${enhancedEmails.length} emails (${classifiedEmails.length} classified, ${unclassifiedCount} need classification)`,
+          recommendations,
+          urgentCount,
+          overdueActionItems: 0, // TODO: Calculate based on date and action required
+          categoryBreakdown,
         },
-        totalEmails: result.data?.totalEstimate || 0,
-        unclassifiedCount: Math.floor((result.data?.emails.length || 0) * 0.3),
-        highPriorityCount: Math.floor((result.data?.emails.length || 0) * 0.2),
-        actionRequiredCount: Math.floor((result.data?.emails.length || 0) * 0.15),
-        nextPageToken: result.data?.nextPageToken,
+        totalEmails: gmailResult.data?.totalEstimate || 0,
+        unclassifiedCount,
+        highPriorityCount,
+        actionRequiredCount,
+        nextPageToken: gmailResult.data?.nextPageToken,
       };
       
-      console.log('Converted data:', convertedData);
+      console.log('Enhanced emails with classifications:', convertedData);
       return { success: true, data: convertedData };
     },
     [maxResults, refreshTrigger]
@@ -583,4 +639,64 @@ function SmartEmailItem({
       </div>
     </div>
   );
+}
+
+/**
+ * Helper function to calculate priority score from classification
+ */
+function calculatePriorityScore(classification: EmailClassification): number {
+  // Weighted combination of urgency and importance (1-10 scale)
+  const urgencyWeight = 0.6;
+  const importanceWeight = 0.4;
+  
+  const urgencyScore = (classification.urgency / 5) * 10;
+  const importanceScore = (classification.importance / 5) * 10;
+  
+  let baseScore = (urgencyScore * urgencyWeight) + (importanceScore * importanceWeight);
+  
+  // Boost score for action required emails
+  if (classification.actionRequired) {
+    baseScore += 1;
+  }
+  
+  // Boost score for work/opportunity categories (based on typical professional priorities)
+  if (classification.category === 'work' || classification.category === 'opportunity') {
+    baseScore += 0.5;
+  }
+  
+  return Math.min(10, Math.max(0, baseScore));
+}
+
+/**
+ * Generate smart recommendations based on email analysis
+ */
+function generateRecommendations(data: {
+  unclassifiedCount: number;
+  urgentCount: number;
+  actionRequiredCount: number;
+  totalEmails: number;
+}): readonly string[] {
+  const recommendations: string[] = [];
+  
+  if (data.urgentCount > 0) {
+    recommendations.push(`${data.urgentCount} urgent emails need immediate attention`);
+  }
+  
+  if (data.actionRequiredCount > 0) {
+    recommendations.push(`${data.actionRequiredCount} emails require specific actions`);
+  }
+  
+  if (data.unclassifiedCount > 0) {
+    recommendations.push(`${data.unclassifiedCount} emails need AI classification for better organization`);
+  }
+  
+  if (data.unclassifiedCount > 5) {
+    recommendations.push('Consider using batch classification to process multiple emails at once');
+  }
+  
+  if (recommendations.length === 0) {
+    recommendations.push('All emails are organized - great job!');
+  }
+  
+  return recommendations;
 }

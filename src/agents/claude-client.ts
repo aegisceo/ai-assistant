@@ -66,10 +66,10 @@ export class ClaudeClient {
       ];
 
       const response = await this.client.messages.create({
-        model: this.config.model!,
-        max_tokens: this.config.maxTokens!,
+        model: this.config.model ?? 'claude-3-sonnet-20240229',
+        max_tokens: this.config.maxTokens ?? 4000,
         messages,
-        ...(systemPrompt && { system: systemPrompt }),
+        ...(systemPrompt !== null && systemPrompt !== undefined ? { system: systemPrompt } : {}),
       });
 
       const processingTimeMs = Date.now() - startTime;
@@ -203,7 +203,7 @@ export class ClaudeClient {
 export function createClaudeClient(): ClaudeClient {
   const apiKey = process.env['ANTHROPIC_API_KEY'];
 
-  if (!apiKey) {
+  if (apiKey === null || apiKey === undefined || apiKey === '') {
     throw new Error('Missing ANTHROPIC_API_KEY environment variable');
   }
 
