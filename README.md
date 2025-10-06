@@ -202,6 +202,45 @@ npm run lint
 npm run lint:fix
 ```
 
+## 🤖 Development Agents
+
+**Automated Code Review & Quality Assurance**
+
+This project includes production-ready development agents that provide automated code review, security scanning, and quality checks directly in the CLI.
+
+### Quick Start
+
+```bash
+# Full security scan
+node scripts/review-code.js src/lib/utils.ts security
+
+# Quick review (blockers and majors only)
+node scripts/quick-review.js src/components/EmailList.tsx
+
+# Full code review with all checks
+node scripts/review-code.js src/app/api/classify.ts full
+```
+
+### Features
+
+- **Type Safety Checks**: Detects `any` types, non-null assertions, unsafe indexing
+- **Security Scanning**: Finds hardcoded secrets, unsafe eval(), XSS vulnerabilities
+- **Privacy Violations**: Detects PII logging, email content exposure
+- **Architecture Compliance**: Validates BaseAgent patterns
+- **Neurodivergent-Friendly**: Checks for clear naming, explicit types, helpful errors
+
+### CLI Usage
+
+The agents work directly in Claude Code CLI with natural language:
+
+```
+"Review this file for security issues"
+"Check test-oauth-setup.js for hardcoded secrets"
+"Scan all TypeScript files for type safety violations"
+```
+
+For detailed documentation, see [AGENT_CLI_USAGE.md](./AGENT_CLI_USAGE.md)
+
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
@@ -219,11 +258,44 @@ npm start
 
 ## 🔒 Privacy & Security
 
-- **No Sensitive Logging**: Email content is never logged in development
+**Security Audit Completed: 2025-10-06** ✅
+
+- **No Hardcoded Secrets**: All credentials stored in environment variables
+- **Secure Logging**: Production-ready secure-logger utility with automatic PII redaction
+- **No Sensitive Logging**: Email content is never logged (verified via security audit)
+- **Exposed Credentials Revoked**: All previously exposed credentials invalidated
 - **Environment Validation**: All environment variables validated with Zod
 - **Rate Limiting**: API endpoints include rate limiting
 - **Encrypted Storage**: Sensitive data encrypted at rest
 - **GDPR Compliant**: User data can be exported/deleted
+- **Automated Security Scanning**: Development agents check for security violations
+
+### Security Tools
+
+**Secure Logger** (`src/lib/utils/secure-logger.ts`):
+```typescript
+import { safeLog, safeLogEmail, safeLogToken } from '@/lib/utils/secure-logger';
+
+// Automatically redacts passwords, tokens, secrets
+safeLog('User data', userData);
+
+// Never logs email body/content
+safeLogEmail('Email received', email);
+
+// Safely logs tokens
+safeLogToken('Auth token', token);
+```
+
+**Security Scanning**:
+```bash
+# Full security scan
+node scripts/review-code.js <file> security
+
+# Quick review (blockers and majors only)
+node scripts/quick-review.js <file>
+```
+
+For complete security audit details, see [SECURITY_FINAL_REPORT.md](./SECURITY_FINAL_REPORT.md)
 
 ## 🤝 Contributing
 

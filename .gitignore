@@ -92,3 +92,42 @@ temp/
 
 # PDF files (development guide)
 *.pdf
+
+# Google OAuth credentials
+credentials.json
+token.json
+gcp-service-account-key.json
+
+# Environment variables
+.env
+
+# Internal Security Reports (DO NOT COMMIT)
+SECURITY_AUDIT_REPORT.md
+SECURITY_FINAL_REPORT.md
+SECURITY_FIXES_PROGRESS.md
+SECURITY_FIX_STEPS.md
+SECURITY_MILESTONE.md
+
+# Internal Planning Documents (DO NOT COMMIT)
+COMPREHENSIVE_REFACTORING_PLAN.md
+AGENT_IMPLEMENTATION_PLAN.md
+
+# Development Tools (should be in separate repo)
+src/dev-agents/
+scripts/review-code.js
+scripts/quick-review.js
+dev-agent-mcp-server.js
+AGENT_CLI_USAGE.md
+
+# Test Data & Results
+email-ingestion-test-results.json
+memory.json
+enhanced-memory.json
+test-code-review-example.ts
+
+# Config Backups
+config-backups/
+claude-desktop-config*.json
+
+# Temporary files
+nul
