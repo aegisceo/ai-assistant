@@ -1,0 +1,42 @@
+{
+  "name": "neuroflow-ai-assistant-ui",
+  "version": "1.0.0",
+  "description": "AI Assistant for Neurodivergent Professionals - Frontend UI",
+  "main": "js/app.js",
+  "scripts": {
+    "dev": "python -m http.server 8080",
+    "serve": "python -m http.server 8080",
+    "build": "echo 'No build process required for vanilla JS/HTML'",
+    "deploy": "gh-pages -d .",
+    "test": "echo 'No tests configured yet'",
+    "lint": "echo 'Linting with basic HTML/CSS/JS validation'"
+  },
+  "keywords": [
+    "ai-assistant",
+    "neurodivergent", 
+    "email-management",
+    "productivity",
+    "gmail-integration",
+    "claude-ai",
+    "vanilla-js",
+    "progressive-web-app"
+  ],
+  "author": "NeuroFlow AI",
+  "license": "MIT",
+  "devDependencies": {
+    "gh-pages": "^6.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aegisceo/neuroflow-ai-assistant.git"
+  },
+  "homepage": "https://aegisceo.github.io/neuroflow-ai-assistant/",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "browserslist": [
+    "defaults",
+    "not ie 11",
+    "not op_mini all"
+  ]
+}

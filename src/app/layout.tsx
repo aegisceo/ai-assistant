@@ -1,4 +1,7 @@
 import type { Metadata } from 'next';
+import { AuthProvider } from '@/components/auth/AuthProvider';
+import { AuthGuard } from '@/components/auth/AuthGuard';
+import './globals.css';
 
 export const metadata: Metadata = {
     title: 'AI Assistant',
@@ -12,7 +15,13 @@ export default function RootLayout({
 }): JSX.Element {
     return (
         <html lang="en">
-            <body>{children}</body>
+            <body>
+                <AuthProvider>
+                    <AuthGuard>
+                        {children}
+                    </AuthGuard>
+                </AuthProvider>
+            </body>
         </html>
     );
 }

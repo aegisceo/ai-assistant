@@ -1,0 +1,1096 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Gmail Component Styles */
+.gmail-status {
+  @apply flex items-start space-x-4 p-4 rounded-lg border;
+}
+
+.gmail-status.loading {
+  @apply border-gray-200 bg-gray-50;
+}
+
+.gmail-status.error {
+  @apply border-red-200 bg-red-50;
+}
+
+.gmail-status.connected {
+  @apply border-green-200 bg-green-50;
+}
+
+.gmail-status.not-connected {
+  @apply border-yellow-200 bg-yellow-50;
+}
+
+.status-indicator {
+  @apply flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full;
+}
+
+.status-indicator.connected {
+  @apply bg-green-100;
+}
+
+.status-indicator.not-connected {
+  @apply bg-yellow-100;
+}
+
+.status-indicator.error {
+  @apply bg-red-100;
+}
+
+.status-text {
+  @apply flex-1 min-w-0;
+}
+
+.status-text h3 {
+  @apply text-lg font-semibold text-gray-900 mb-2;
+}
+
+.status-text p {
+  @apply text-sm text-gray-600 mb-2;
+}
+
+.connection-details {
+  @apply text-xs text-gray-500 mb-4 space-y-1;
+}
+
+.actions {
+  @apply flex flex-wrap gap-2;
+}
+
+.connect-button {
+  @apply bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.disconnect-button {
+  @apply bg-red-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-red-700 disabled:opacity-50;
+}
+
+.reconnect-button {
+  @apply bg-orange-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-orange-700 disabled:opacity-50;
+}
+
+.retry-button {
+  @apply bg-gray-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-gray-700;
+}
+
+.loading-spinner {
+  @apply animate-spin w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full;
+}
+
+.error-message {
+  @apply text-red-600 text-xs mt-2;
+}
+
+.warning {
+  @apply text-orange-600 font-medium;
+}
+
+.permissions-info {
+  @apply mb-4;
+}
+
+.permissions-info h4 {
+  @apply text-sm font-medium text-gray-700 mb-2;
+}
+
+.permissions-info ul {
+  @apply list-disc list-inside text-xs text-gray-600 space-y-1;
+}
+
+/* Email List Styles */
+.email-list {
+  @apply space-y-4;
+}
+
+.email-filters {
+  @apply space-y-3 pb-4 border-b border-gray-200 mb-4;
+}
+
+.filter-row {
+  @apply flex flex-wrap gap-2 items-center;
+}
+
+.search-input {
+  @apply flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.label-select {
+  @apply px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.refresh-button {
+  @apply px-3 py-2 bg-gray-600 text-white rounded-md text-sm font-medium hover:bg-gray-700 disabled:opacity-50;
+}
+
+.filter-options {
+  @apply flex flex-wrap gap-4;
+}
+
+.checkbox-label {
+  @apply flex items-center text-sm text-gray-600;
+}
+
+.checkbox-label input {
+  @apply mr-2;
+}
+
+.loading-state {
+  @apply flex flex-col items-center justify-center py-8 text-gray-500;
+}
+
+.error-state {
+  @apply text-center py-8;
+}
+
+.email-list-header {
+  @apply flex items-center justify-between mb-4 pb-2 border-b border-gray-200;
+}
+
+.email-count {
+  @apply text-sm text-gray-600;
+}
+
+.emails {
+  @apply space-y-2;
+}
+
+.empty-state {
+  @apply text-center py-8 text-gray-500;
+}
+
+.email-item {
+  @apply flex items-center p-3 rounded-lg border hover:bg-gray-50 transition-colors;
+}
+
+.email-item.unread {
+  @apply border-blue-200 bg-blue-50;
+}
+
+.email-item.read {
+  @apply border-gray-200 bg-white;
+}
+
+.email-item.important {
+  @apply border-yellow-300;
+}
+
+.email-sender {
+  @apply flex items-center w-48 flex-shrink-0;
+}
+
+.sender-name {
+  @apply text-sm font-medium text-gray-900 truncate;
+}
+
+.important-indicator {
+  @apply text-yellow-500 ml-2;
+}
+
+.email-content {
+  @apply flex-1 min-w-0 px-4;
+}
+
+.email-subject {
+  @apply text-sm font-medium text-gray-900 truncate mb-1;
+}
+
+.email-item.read .email-subject {
+  @apply font-normal;
+}
+
+.email-snippet {
+  @apply text-xs text-gray-600 truncate;
+}
+
+.email-meta {
+  @apply flex flex-col items-end w-24 flex-shrink-0;
+}
+
+.email-date {
+  @apply text-xs text-gray-500 mb-1;
+}
+
+.email-labels {
+  @apply flex flex-wrap gap-1 justify-end;
+}
+
+.label-tag {
+  @apply text-xs bg-gray-100 text-gray-700 px-1 py-0.5 rounded;
+}
+
+.pagination {
+  @apply flex justify-center gap-2 mt-4 pt-4 border-t border-gray-200;
+}
+
+.pagination-button {
+  @apply px-4 py-2 bg-white border border-gray-300 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* System Status Styles */
+.status-indicator.success {
+  @apply text-green-600;
+}
+
+.status-indicator.pending {
+  @apply text-yellow-600;
+}
+
+/* Focused Dashboard Styles - Neurodivergent-Friendly Design */
+.focused-dashboard {
+  @apply max-w-6xl mx-auto p-6 space-y-6;
+}
+
+.dashboard-header {
+  @apply flex items-start justify-between mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200;
+}
+
+.header-content h1.dashboard-title {
+  @apply text-2xl font-bold text-gray-900 mb-2 flex items-center space-x-3;
+}
+
+.title-icon {
+  @apply text-3xl;
+}
+
+.dashboard-subtitle {
+  @apply text-gray-600 text-sm max-w-md;
+}
+
+.header-controls {
+  @apply flex items-center space-x-2;
+}
+
+.settings-toggle {
+  @apply p-2 text-xl hover:bg-white hover:shadow-sm rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+/* Focus Settings Panel */
+.focus-settings-panel {
+  @apply bg-white border border-gray-200 rounded-lg p-6 shadow-sm;
+}
+
+.settings-header {
+  @apply flex items-center justify-between mb-4 pb-3 border-b border-gray-200;
+}
+
+.settings-header h3 {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.close-button {
+  @apply text-gray-400 hover:text-gray-600 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors;
+}
+
+.settings-content {
+  @apply space-y-4;
+}
+
+.setting-group {
+  @apply space-y-2;
+}
+
+.setting-label {
+  @apply flex items-center space-x-2 text-sm font-medium text-gray-700 cursor-pointer;
+}
+
+.setting-label input[type="checkbox"] {
+  @apply rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4;
+}
+
+.setting-description {
+  @apply text-xs text-gray-500 ml-6;
+}
+
+.setting-slider {
+  @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider;
+}
+
+.setting-slider::-webkit-slider-thumb {
+  @apply appearance-none w-4 h-4 bg-blue-600 rounded-full cursor-pointer;
+}
+
+/* Dashboard Sections */
+.dashboard-sections {
+  @apply space-y-4;
+}
+
+.dashboard-section {
+  @apply bg-white border border-gray-200 rounded-lg shadow-sm transition-all duration-300;
+}
+
+.dashboard-section.disabled {
+  @apply opacity-60 bg-gray-50;
+}
+
+.section-header {
+  @apply w-full p-4 flex items-start justify-between text-left border-none bg-transparent transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset rounded-lg;
+}
+
+.section-info {
+  @apply flex-1 min-w-0;
+}
+
+.section-title-row {
+  @apply flex items-center space-x-3 mb-2;
+}
+
+.section-icon {
+  @apply text-2xl flex-shrink-0;
+}
+
+.section-title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.cognitive-load-indicator {
+  @apply px-2 py-1 text-xs font-medium rounded-full uppercase tracking-wide;
+}
+
+.section-description {
+  @apply text-sm text-gray-600 leading-relaxed;
+}
+
+.section-controls {
+  @apply flex-shrink-0 ml-4;
+}
+
+.expand-indicator {
+  @apply w-8 h-8 flex items-center justify-center text-xl font-bold text-gray-400 bg-gray-100 rounded-full transition-all duration-200;
+}
+
+.expand-indicator.expanded {
+  @apply text-blue-600 bg-blue-100 rotate-0;
+}
+
+.expand-indicator:not(.expanded) {
+  @apply rotate-0;
+}
+
+.section-content {
+  @apply border-t border-gray-100 p-4 bg-gray-50;
+}
+
+.section-content.animated {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.section-content.no-animation {
+  @apply transition-none;
+}
+
+/* Dashboard Footer */
+.dashboard-footer {
+  @apply mt-8 pt-6 border-t border-gray-200;
+}
+
+.quick-stats {
+  @apply flex flex-wrap items-center justify-center gap-6 text-sm;
+}
+
+.stat-item {
+  @apply flex items-center space-x-2;
+}
+
+.stat-label {
+  @apply text-gray-600;
+}
+
+.stat-value {
+  @apply font-medium text-gray-900;
+}
+
+.stat-value.connected {
+  @apply text-green-600;
+}
+
+.stat-value.disconnected {
+  @apply text-orange-600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .focused-dashboard {
+    @apply p-4 space-y-4;
+  }
+  
+  .dashboard-header {
+    @apply flex-col items-start space-y-4;
+  }
+  
+  .header-controls {
+    @apply self-end;
+  }
+  
+  .section-title-row {
+    @apply flex-wrap;
+  }
+  
+  .cognitive-load-indicator {
+    @apply mt-1 ml-8;
+  }
+  
+  .quick-stats {
+    @apply flex-col items-start gap-2;
+  }
+}
+
+/* Focus and Accessibility Enhancements */
+@media (prefers-reduced-motion: reduce) {
+  .section-content.animated,
+  .expand-indicator,
+  .dashboard-section {
+    @apply transition-none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .dashboard-section {
+    @apply border-2 border-gray-400;
+  }
+  
+  .section-header:focus {
+    @apply ring-4 ring-blue-600;
+  }
+  
+  .cognitive-load-indicator {
+    @apply border border-current;
+  }
+}
+
+/* Focused Priority System Styles - Neurodivergent-Friendly */
+.priority-quick-view {
+  @apply inline-flex;
+}
+
+.priority-indicator {
+  @apply flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium border;
+}
+
+.priority-icon {
+  @apply text-lg;
+}
+
+.priority-label {
+  @apply font-semibold;
+}
+
+.action-indicator {
+  @apply text-sm;
+}
+
+/* Priority Edit Mode */
+.priority-edit-mode {
+  @apply space-y-4 p-4 bg-white border border-gray-200 rounded-lg shadow-sm;
+}
+
+.priority-options {
+  @apply grid grid-cols-2 md:grid-cols-5 gap-2;
+}
+
+.priority-option {
+  @apply flex flex-col items-center space-y-2 p-3 border-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
+}
+
+.option-icon {
+  @apply text-2xl;
+}
+
+.option-label {
+  @apply capitalize font-semibold;
+}
+
+.edit-actions {
+  @apply flex justify-end space-x-2;
+}
+
+.cancel-button {
+  @apply px-4 py-2 text-sm text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500;
+}
+
+/* Priority View Mode */
+.priority-view-mode {
+  @apply space-y-3;
+}
+
+.priority-card {
+  @apply flex items-center justify-between p-3 border-2 rounded-lg;
+}
+
+.priority-main {
+  @apply flex-1 space-y-2;
+}
+
+.priority-header {
+  @apply flex items-center space-x-3;
+}
+
+.priority-icon {
+  @apply text-xl;
+}
+
+.priority-title {
+  @apply font-semibold text-base;
+}
+
+.priority-score {
+  @apply text-sm opacity-75;
+}
+
+.action-required-badge {
+  @apply flex items-center space-x-2 px-2 py-1 bg-red-50 border border-red-200 rounded-md text-sm text-red-700;
+}
+
+.action-icon {
+  @apply text-sm;
+}
+
+.action-text {
+  @apply font-medium;
+}
+
+.time-sensitive-badge {
+  @apply flex items-center space-x-2 px-2 py-1 bg-orange-50 border border-orange-200 rounded-md text-sm text-orange-700;
+}
+
+.time-icon {
+  @apply text-sm;
+}
+
+.time-text {
+  @apply font-medium;
+}
+
+.priority-actions {
+  @apply flex items-center space-x-2;
+}
+
+.edit-priority-button {
+  @apply p-2 text-lg hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.reasoning-toggle {
+  @apply p-2 text-sm hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+/* Priority Reasoning */
+.priority-reasoning {
+  @apply p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-3;
+}
+
+.reasoning-header h4 {
+  @apply text-sm font-semibold text-gray-900 mb-2;
+}
+
+.reasoning-content {
+  @apply space-y-3;
+}
+
+.reasoning-factors {
+  @apply space-y-3;
+}
+
+.factor {
+  @apply flex items-center space-x-3;
+}
+
+.factor-label {
+  @apply text-sm font-medium text-gray-700 w-20 flex-shrink-0;
+}
+
+.factor-bar {
+  @apply flex-1 h-3 bg-gray-200 rounded-full overflow-hidden;
+}
+
+.factor-fill {
+  @apply h-full transition-all duration-500;
+}
+
+.factor-value {
+  @apply text-sm font-semibold text-gray-900 w-12 text-right;
+}
+
+.ai-reasoning {
+  @apply mt-3 pt-3 border-t border-gray-300;
+}
+
+.reasoning-text {
+  @apply text-sm text-gray-700 leading-relaxed;
+}
+
+/* Priority Filter */
+.priority-filter {
+  @apply space-y-4 p-4 bg-white border border-gray-200 rounded-lg;
+}
+
+.filter-header {
+  @apply space-y-1;
+}
+
+.filter-title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.filter-description {
+  @apply text-sm text-gray-600;
+}
+
+.priority-filter-options {
+  @apply grid grid-cols-2 md:grid-cols-5 gap-2;
+}
+
+.filter-option {
+  @apply flex flex-col items-center space-y-2 p-3 border-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
+}
+
+.filter-option.selected {
+  @apply opacity-100;
+}
+
+.filter-icon {
+  @apply text-xl;
+}
+
+.filter-label {
+  @apply capitalize font-semibold;
+}
+
+.filter-count {
+  @apply text-xs opacity-75;
+}
+
+.filter-actions {
+  @apply flex justify-center space-x-4 pt-3 border-t border-gray-200;
+}
+
+.select-all-button {
+  @apply px-4 py-2 text-sm bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.clear-all-button {
+  @apply px-4 py-2 text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500;
+}
+
+/* Responsive Design for Priority System */
+@media (max-width: 768px) {
+  .priority-options,
+  .priority-filter-options {
+    @apply grid-cols-1 gap-3;
+  }
+  
+  .priority-card {
+    @apply flex-col items-start space-y-3;
+  }
+  
+  .priority-actions {
+    @apply self-end;
+  }
+  
+  .factor {
+    @apply flex-col items-start space-y-1;
+  }
+  
+  .factor-label {
+    @apply w-auto;
+  }
+  
+  .factor-bar {
+    @apply w-full;
+  }
+  
+  .factor-value {
+    @apply w-auto text-left;
+  }
+}
+
+/* Adaptive Learning System Styles - Neurodivergent-Friendly */
+.adaptive-learning-system {
+  @apply space-y-4;
+}
+
+.no-classification-feedback {
+  @apply p-3 bg-gray-50 border border-gray-200 rounded-lg;
+}
+
+.feedback-prompt {
+  @apply text-sm text-gray-600 text-center;
+}
+
+/* Feedback Trigger */
+.feedback-trigger {
+  @apply flex items-center space-x-2;
+}
+
+.open-feedback-button {
+  @apply flex items-center space-x-2 px-3 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.feedback-icon {
+  @apply text-lg;
+}
+
+.feedback-text {
+  @apply text-sm font-medium;
+}
+
+.toggle-mode-button {
+  @apply p-2 text-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500;
+}
+
+/* Simple Feedback */
+.simple-feedback-container {
+  @apply p-4 bg-white border border-gray-200 rounded-lg shadow-sm space-y-4;
+}
+
+.feedback-header {
+  @apply text-center space-y-1;
+}
+
+.feedback-title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.feedback-subtitle {
+  @apply text-sm text-gray-600;
+}
+
+.simple-feedback-options {
+  @apply grid grid-cols-1 md:grid-cols-5 gap-3;
+}
+
+.simple-feedback-button {
+  @apply flex flex-col items-center space-y-2 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.feedback-emoji {
+  @apply text-2xl;
+}
+
+.feedback-label {
+  @apply text-sm font-medium text-gray-800;
+}
+
+/* Energy Level Selector */
+.energy-level-selector {
+  @apply space-y-3;
+}
+
+.energy-level-label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.energy-options {
+  @apply flex justify-center space-x-2;
+}
+
+.energy-button {
+  @apply flex items-center space-x-1 px-3 py-2 border border-gray-300 rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.energy-button.selected {
+  @apply bg-blue-100 border-blue-300 text-blue-800;
+}
+
+.energy-button:not(.selected) {
+  @apply bg-white text-gray-700 hover:bg-gray-50;
+}
+
+/* Detailed Feedback */
+.detailed-feedback-container {
+  @apply p-4 bg-white border border-gray-200 rounded-lg shadow-sm space-y-4;
+}
+
+.correction-fields {
+  @apply space-y-4;
+}
+
+.correction-field {
+  @apply space-y-2;
+}
+
+.correction-label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.urgency-slider,
+.importance-slider {
+  @apply flex items-center space-x-3;
+}
+
+.slider {
+  @apply flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  @apply appearance-none w-5 h-5 bg-blue-600 rounded-full cursor-pointer border-2 border-white shadow-md;
+}
+
+.slider-value {
+  @apply text-sm font-semibold text-gray-900 w-8 text-center;
+}
+
+.category-select {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.checkbox-label {
+  @apply flex items-center space-x-2 text-sm text-gray-700 cursor-pointer;
+}
+
+.checkbox-label input {
+  @apply rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4;
+}
+
+/* Confidence Selector */
+.confidence-selector {
+  @apply space-y-3;
+}
+
+.confidence-label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.confidence-options {
+  @apply flex justify-center space-x-2;
+}
+
+.confidence-button {
+  @apply flex flex-col items-center space-y-1 px-3 py-2 border border-gray-300 rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.confidence-button.selected {
+  @apply bg-green-100 border-green-300 text-green-800;
+}
+
+.confidence-button:not(.selected) {
+  @apply bg-white text-gray-700 hover:bg-gray-50;
+}
+
+.detailed-feedback-actions {
+  @apply flex justify-end space-x-3 pt-3 border-t border-gray-200;
+}
+
+.cancel-feedback-button {
+  @apply px-4 py-2 text-sm text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500;
+}
+
+.submit-feedback-button {
+  @apply px-4 py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* Learning Progress */
+.learning-progress-container {
+  @apply p-4 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg;
+}
+
+.progress-header {
+  @apply text-center space-y-1 mb-4;
+}
+
+.progress-title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.progress-subtitle {
+  @apply text-sm text-gray-600;
+}
+
+.learning-patterns {
+  @apply space-y-3;
+}
+
+.learning-pattern {
+  @apply space-y-2;
+}
+
+.pattern-info {
+  @apply flex justify-between items-center;
+}
+
+.pattern-text {
+  @apply text-sm font-medium text-gray-800;
+}
+
+.pattern-confidence {
+  @apply text-xs text-gray-600;
+}
+
+.pattern-bar {
+  @apply w-full h-2 bg-gray-200 rounded-full overflow-hidden;
+}
+
+.pattern-fill {
+  @apply h-full bg-gradient-to-r from-purple-400 to-blue-500 transition-all duration-1000;
+}
+
+/* Learning Statistics */
+.learning-stats-display {
+  @apply space-y-6 p-6 bg-white border border-gray-200 rounded-lg;
+}
+
+.stats-header {
+  @apply text-center space-y-2;
+}
+
+.stats-title {
+  @apply text-xl font-bold text-gray-900;
+}
+
+.stats-subtitle {
+  @apply text-sm text-gray-600;
+}
+
+.stats-grid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-4;
+}
+
+.stat-card {
+  @apply flex items-center space-x-4 p-4 bg-gray-50 border border-gray-200 rounded-lg;
+}
+
+.stat-icon {
+  @apply text-2xl;
+}
+
+.stat-content {
+  @apply space-y-1;
+}
+
+.stat-value {
+  @apply text-xl font-bold text-gray-900 px-2 py-1 rounded;
+}
+
+.stat-label {
+  @apply text-sm text-gray-600;
+}
+
+.top-patterns {
+  @apply space-y-4;
+}
+
+.patterns-title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.patterns-list {
+  @apply space-y-3;
+}
+
+.pattern-item {
+  @apply flex items-start space-x-3 p-3 bg-gray-50 border border-gray-200 rounded-lg;
+}
+
+.pattern-rank {
+  @apply flex-shrink-0 w-8 h-8 flex items-center justify-center bg-purple-100 text-purple-800 rounded-full text-sm font-bold;
+}
+
+.pattern-details {
+  @apply flex-1 space-y-1;
+}
+
+.pattern-description {
+  @apply text-sm font-medium text-gray-800;
+}
+
+.pattern-stats {
+  @apply text-xs text-gray-600;
+}
+
+/* Responsive Design for Learning System */
+@media (max-width: 768px) {
+  .simple-feedback-options {
+    @apply grid-cols-1 gap-2;
+  }
+  
+  .energy-options,
+  .confidence-options {
+    @apply flex-wrap gap-2 justify-start;
+  }
+  
+  .stats-grid {
+    @apply grid-cols-1 gap-3;
+  }
+  
+  .pattern-item {
+    @apply flex-col items-start space-y-2;
+  }
+  
+  .pattern-rank {
+    @apply self-start;
+  }
+  
+  .detailed-feedback-actions {
+    @apply flex-col space-y-2;
+  }
+}
+
+/* Email Classification Styles */
+.classification-compact {
+  @apply mt-2;
+}
+
+.classification-detailed {
+  @apply space-y-3 p-3 bg-gray-50 rounded-lg;
+}
+
+.classification-header {
+  @apply flex items-center justify-between;
+}
+
+.classification-metrics .metric {
+  @apply space-y-1;
+}
+
+.reasoning {
+  @apply mt-3;
+}
+
+.suggestions {
+  @apply mt-3;
+}
+
+.metadata {
+  @apply mt-3 pt-3 border-t border-gray-200;
+}
+
+.confidence-breakdown {
+  @apply mt-2;
+}
+
+.classify-button {
+  @apply flex items-center space-x-1 px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.classify-icon {
+  @apply text-sm;
+}
+
+.classify-text {
+  @apply font-medium;
+}
+
+.email-classification {
+  @apply mt-2;
+}
+
+.email-actions {
+  @apply mt-2 flex justify-end;
+}
+
+.email-item {
+  @apply grid grid-cols-12 gap-4 p-3 rounded-lg border hover:bg-gray-50 transition-colors;
+}
+
+.email-sender {
+  @apply col-span-3 flex items-center;
+}
+
+.email-content {
+  @apply col-span-7;
+}
+
+.email-meta {
+  @apply col-span-2 flex flex-col items-end justify-start;
+}
